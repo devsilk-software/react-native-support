@@ -1,0 +1,55 @@
+/**
+ * Wire types — mirror of the platform's zod schemas (plan §6).
+ * Hand-synced until M3 generates them from the OpenAPI spec.
+ */
+
+export interface SupportConfig {
+  /** Publishable key: rns_pk_test_… or rns_pk_live_… */
+  apiKey: string;
+  /** Platform base URL, e.g. https://api.example.com — no trailing slash. */
+  apiUrl: string;
+}
+
+export interface BootstrapRequest {
+  apiKey: string;
+  installId: string;
+  bundleId?: string;
+  platform?: 'ios' | 'android';
+  appVersion?: string;
+  sdkVersion?: string;
+}
+
+export interface BootstrapResponse {
+  project: {
+    id: string;
+    name: string;
+    config: Record<string, unknown>;
+  };
+  mode: 'test' | 'live';
+  quota: {
+    state: 'ok' | 'warning' | 'exceeded';
+    used: number;
+    limit: number;
+  };
+  serverTime: string;
+}
+
+export interface Citation {
+  documentId: string;
+  title?: string;
+  url?: string;
+}
+
+export interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  citations?: Citation[];
+  createdAt: string;
+  /** Local-only delivery state for optimistic rendering. */
+  status?: 'sending' | 'sent' | 'failed';
+}
+
+export interface ApiErrorBody {
+  error: { code: string; message: string };
+}

@@ -1,0 +1,76 @@
+{
+  "name": "react-native-support",
+  "version": "0.1.0",
+  "description": "AI customer support SDK for React Native. Add a 24/7 AI support agent to your app in minutes.",
+  "source": "./src/index.ts",
+  "main": "./lib/commonjs/index.js",
+  "module": "./lib/module/index.js",
+  "types": "./lib/typescript/commonjs/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": {
+        "types": "./lib/typescript/module/index.d.ts",
+        "default": "./lib/module/index.js"
+      },
+      "default": {
+        "types": "./lib/typescript/commonjs/index.d.ts",
+        "default": "./lib/commonjs/index.js"
+      }
+    },
+    "./headless": {
+      "source": "./src/headless.ts",
+      "import": {
+        "types": "./lib/typescript/module/headless.d.ts",
+        "default": "./lib/module/headless.js"
+      },
+      "default": {
+        "types": "./lib/typescript/commonjs/headless.d.ts",
+        "default": "./lib/commonjs/headless.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["src", "lib", "!**/__tests__", "!**/*.tsbuildinfo"],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "test": "jest",
+    "build": "bob build",
+    "clean": "rm -rf lib",
+    "prepare": "bob build"
+  },
+  "keywords": ["react-native", "support", "chat", "ai", "customer-support", "chatbot", "expo"],
+  "repository": "github:devsilk-software/react-native-support",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": "*",
+    "react-native-keyboard-controller": ">=1.12.0"
+  },
+  "peerDependenciesMeta": {
+    "react-native-keyboard-controller": { "optional": true }
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/react": "^19.2.18",
+    "eslint": "^9.0.0",
+    "typescript-eslint": "^8.0.0",
+    "jest": "^29.7.0",
+    "react": "^19.2.8",
+    "react-native": "^0.87.0",
+    "react-native-builder-bob": "^0.43.0",
+    "ts-jest": "^29.4.12",
+    "typescript": "~5.9.0"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      ["commonjs", { "esm": true }],
+      ["module", { "esm": true }],
+      ["typescript", { "project": "tsconfig.build.json" }]
+    ]
+  },
+  "engines": { "node": ">=20" }
+}
