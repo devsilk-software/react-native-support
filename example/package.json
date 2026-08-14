@@ -1,0 +1,16 @@
+{
+  "name": "react-native-support-example",
+  "private": true,
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start"
+  },
+  "dependencies": {
+    "expo": "^54.0.0",
+    "expo-status-bar": "~3.0.0",
+    "react": "*",
+    "react-native": "*",
+    "react-native-support": "file:.."
+  }
+}
