@@ -9,11 +9,11 @@ import type {
 } from './types';
 
 /**
- * HTTP client for the platform wire protocol (plan §6).
+ * HTTP client for the platform wire protocol.
  *
  * Pure TypeScript on global fetch — no React, no React Native imports, so it
- * runs under Node for tests and is reusable for future non-RN SDKs (plan §3).
- * Streaming (SSE over XHR) is added in M2; the message endpoint is designed
+ * runs under Node for tests and is reusable for future non-RN SDKs.
+ * Streaming (SSE over XHR) comes later; the message endpoint is designed
  * for it, so turning it on is additive.
  */
 

@@ -5,7 +5,7 @@
 export { SupportAI } from './ui/SupportAI';
 export type { SupportAIProps } from './ui/SupportAI';
 export { defaultTheme } from './ui/theme';
-export type { SupportTheme } from './ui/theme';
+export type { SupportTheme, SupportThemeOverride } from './ui/theme';
 export { defaultStrings } from './ui/strings';
 export type { SupportStrings } from './ui/strings';
 

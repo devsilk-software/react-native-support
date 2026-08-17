@@ -7,7 +7,7 @@ import {
 import { tryRequire } from '../core/tryRequire';
 
 /**
- * Keyboard handling — plan §3.1.
+ * Keyboard handling.
  *
  * `react-native-keyboard-controller` is an optional peer: present (dev build /
  * bare RN) → best-in-class interactive tracking; absent (Expo Go) → RN's

@@ -43,6 +43,9 @@
   "keywords": ["react-native", "support", "chat", "ai", "customer-support", "chatbot", "expo"],
   "repository": "github:devsilk-software/react-native-support",
   "license": "MIT",
+  "dependencies": {
+    "styled-components": "^6.5.3"
+  },
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-native": "*",

@@ -1,6 +1,6 @@
 /**
- * Wire types — mirror of the platform's zod schemas (plan §6).
- * Hand-synced until M3 generates them from the OpenAPI spec.
+ * Wire types — mirror of the platform's zod schemas.
+ * Hand-synced; will be generated from the OpenAPI spec.
  */
 
 export interface SupportConfig {

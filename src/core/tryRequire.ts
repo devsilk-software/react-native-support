@@ -1,5 +1,5 @@
 /**
- * Optional-dependency detection — plan §3.1.
+ * Optional-dependency detection.
  *
  * Metro resolves imports statically, so callers must pass a closure whose
  * `require` uses a LITERAL specifier:

@@ -12,7 +12,7 @@ import { generateId } from '../core/ids';
 import type { BootstrapResponse, SupportConfig } from '../core/types';
 
 /**
- * Provider layer (plan §3). `<SupportAI />` mounts this internally; headless
+ * Provider layer. `<SupportAI />` mounts this internally; headless
  * consumers mount it themselves and build their own UI on the hooks.
  */
 
@@ -31,7 +31,7 @@ export interface SupportProviderProps extends SupportConfig {
 
 /**
  * Install id: stable per provider instance for now. Persisting it across app
- * launches (AsyncStorage as an optional peer) lands in M1 with the device
+ * launches (AsyncStorage as an optional peer) will arrive with the device
  * collectors — the wire contract already carries it, so that change is local.
  */
 export function SupportProvider({ apiKey, apiUrl, children }: SupportProviderProps) {

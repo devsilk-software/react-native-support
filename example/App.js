@@ -19,7 +19,12 @@ export default function App() {
       <Text style={styles.body}>
         This is your app. The button in the corner is the SDK.
       </Text>
-      <SupportAI apiKey={API_KEY} apiUrl={API_URL} />
+      <SupportAI
+        apiKey={API_KEY}
+        apiUrl={API_URL}
+        // Every visual value is a theme token — override any group partially:
+        theme={{ colors: { primary: '#0E7C86', userBubble: '#0E7C86' } }}
+      />
       <StatusBar style="auto" />
     </View>
   );

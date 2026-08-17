@@ -1,51 +1,44 @@
-import { Platform, Pressable, StyleSheet, Text } from 'react-native';
+import { Platform } from 'react-native';
+import styled from 'styled-components/native';
+import { t } from './styled';
 import type { SupportStrings } from './strings';
-import type { SupportTheme } from './theme';
 
-/** Absolute-positioned FAB that opens the chat (plan §3.1). */
+/** Absolute-positioned FAB that opens the chat. */
 export function FloatingButton({
   onPress,
-  theme,
   strings,
 }: {
   onPress: () => void;
-  theme: SupportTheme;
   strings: SupportStrings;
 }) {
-  const size = theme.buttonSize;
   return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={strings.openSupport}
-      style={({ pressed }) => [
-        styles.fab,
-        {
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-          backgroundColor: theme.primary,
-          transform: [{ scale: pressed ? 0.94 : 1 }],
-        },
-      ]}
-    >
-      <Text style={[styles.icon, { fontSize: size * 0.45 }]}>{'?'}</Text>
-    </Pressable>
+    <Fab onPress={onPress} accessibilityRole="button" accessibilityLabel={strings.openSupport}>
+      <FabGlyph>{'?'}</FabGlyph>
+    </Fab>
   );
 }
 
-const styles = StyleSheet.create({
-  fab: {
-    position: 'absolute',
-    right: 20,
-    bottom: Platform.OS === 'ios' ? 40 : 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  icon: { color: '#FFFFFF', fontWeight: '700' },
-});
+const FAB_BOTTOM = Platform.OS === 'ios' ? 40 : 24;
+
+const Fab = styled.Pressable`
+  position: absolute;
+  right: ${t((th) => th.spacing.lg + 4)}px;
+  bottom: ${FAB_BOTTOM}px;
+  width: ${t((th) => th.sizes.floatingButton)}px;
+  height: ${t((th) => th.sizes.floatingButton)}px;
+  border-radius: ${t((th) => th.sizes.floatingButton / 2)}px;
+  align-items: center;
+  justify-content: center;
+  background-color: ${t((th) => th.colors.primary)};
+  elevation: 6;
+  shadow-color: #000;
+  shadow-opacity: 0.2;
+  shadow-radius: 8px;
+  shadow-offset: 0px 4px;
+`;
+
+const FabGlyph = styled.Text`
+  color: ${t((th) => th.colors.onPrimary)};
+  font-size: ${t((th) => Math.round(th.sizes.floatingButton * 0.45))}px;
+  font-weight: 700;
+`;

@@ -1,10 +1,15 @@
 import { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
-import type { SupportTheme } from './theme';
+import { Animated, Easing } from 'react-native';
+import styled from 'styled-components/native';
+import { t } from './styled';
 
 /** Three pulsing dots while the assistant turn is in flight. */
-export function TypingIndicator({ theme }: { theme: SupportTheme }) {
-  const dots = [useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current, useRef(new Animated.Value(0)).current];
+export function TypingIndicator() {
+  const dots = [
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+  ];
 
   useEffect(() => {
     const loops = dots.map((v, i) =>
@@ -33,36 +38,48 @@ export function TypingIndicator({ theme }: { theme: SupportTheme }) {
   }, []);
 
   return (
-    <View style={styles.row} accessibilityLabel="Assistant is typing">
-      <View style={[styles.bubble, { backgroundColor: theme.assistantBubble, borderRadius: theme.bubbleRadius }]}>
+    <Row accessibilityLabel="Assistant is typing">
+      <Bubble>
         {dots.map((v, i) => (
-          <Animated.View
+          <Dot
             key={i}
-            style={[
-              styles.dot,
-              {
-                backgroundColor: theme.mutedText,
-                opacity: v.interpolate({ inputRange: [0, 1], outputRange: [0.35, 1] }),
-                transform: [
-                  { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, -3] }) },
-                ],
-              },
-            ]}
+            style={{
+              opacity: v.interpolate({ inputRange: [0, 1], outputRange: [0.35, 1] }),
+              transform: [
+                { translateY: v.interpolate({ inputRange: [0, 1], outputRange: [0, -3] }) },
+              ],
+            }}
           />
         ))}
-      </View>
-    </View>
+      </Bubble>
+    </Row>
   );
 }
 
-const styles = StyleSheet.create({
-  row: { paddingHorizontal: 12, marginVertical: 3, flexDirection: 'row' },
-  bubble: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    gap: 4,
-  },
-  dot: { width: 7, height: 7, borderRadius: 4 },
-});
+const Row = styled.View`
+  flex-direction: row;
+  padding-horizontal: ${t((th) => th.spacing.md)}px;
+  margin-vertical: ${t((th) => th.spacing.xs / 2)}px;
+`;
+
+const Bubble = styled.View`
+  flex-direction: row;
+  align-items: center;
+  padding: ${t((th) => th.spacing.md)}px ${t((th) => th.spacing.md + 2)}px;
+  border-radius: ${t((th) => th.radii.bubble)}px;
+  background-color: ${t((th) => th.colors.assistantBubble)};
+  gap: ${t((th) => th.spacing.xs)}px;
+`;
+
+/**
+ * Animated values (opacity/transform driven by the native driver) cannot be
+ * expressed in a static stylesheet — they are data, not styling, so they stay
+ * on the `style` prop of an Animated view. Colors and layout still come from
+ * the theme.
+ */
+const Dot = styled(Animated.View)`
+  width: 7px;
+  height: 7px;
+  border-radius: 4px;
+  background-color: ${t((th) => th.colors.muted)};
+`;

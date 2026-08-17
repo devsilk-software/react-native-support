@@ -1,32 +1,31 @@
-import { Modal, Platform, Pressable, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Modal, Platform, StatusBar } from 'react-native';
+import styled from 'styled-components/native';
 import type { SupportChat } from '../react/useSupportChat';
 import { Composer } from './Composer';
 import { ErrorBanner } from './ErrorBanner';
 import { MessageList } from './MessageList';
 import { KeyboardAvoider, keyboardBehavior } from './useKeyboard';
+import { t } from './styled';
 import type { SupportStrings } from './strings';
-import type { SupportTheme } from './theme';
 
 /**
- * Full-screen chat sheet (plan §3.1): header, list, error banner, composer,
- * inside the normalised keyboard avoider. Safe-area handling uses StatusBar
- * height + a platform constant — react-native-safe-area-context becomes an
- * optional upgrade in M1, same pattern as the keyboard library.
+ * Full-screen chat sheet: header, list, error banner, composer, inside the
+ * normalised keyboard avoider. Safe-area handling uses StatusBar height plus
+ * a platform constant; react-native-safe-area-context becomes an optional
+ * upgrade later, same pattern as the keyboard library.
  */
-const TOP_INSET = Platform.OS === 'ios' ? 59 : (StatusBar.currentHeight ?? 24);
+const TOP_INSET = Platform.OS === 'ios' ? 14 : (StatusBar.currentHeight ?? 24);
 const BOTTOM_INSET = Platform.OS === 'ios' ? 24 : 8;
 
 export function ChatSheet({
   visible,
   onClose,
   chat,
-  theme,
   strings,
 }: {
   visible: boolean;
   onClose: () => void;
   chat: SupportChat;
-  theme: SupportTheme;
   strings: SupportStrings;
 }) {
   return (
@@ -36,63 +35,70 @@ export function ChatSheet({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <KeyboardAvoider
-        behavior={keyboardBehavior}
-        style={[styles.container, { backgroundColor: theme.background }]}
-      >
-        <View style={[styles.header, { borderBottomColor: theme.border, paddingTop: Platform.OS === 'ios' ? 14 : TOP_INSET }]}>
-          <Text style={[styles.title, { color: theme.headerText }]}>
-            {strings.headerTitle}
-          </Text>
-          <Pressable
+      <Container behavior={keyboardBehavior}>
+        <Header>
+          <HeaderTitle>{strings.headerTitle}</HeaderTitle>
+          <CloseButton
             onPress={onClose}
             accessibilityRole="button"
             accessibilityLabel={strings.close}
             hitSlop={12}
           >
-            <Text style={[styles.closeGlyph, { color: theme.mutedText }]}>✕</Text>
-          </Pressable>
-        </View>
+            <CloseGlyph>✕</CloseGlyph>
+          </CloseButton>
+        </Header>
 
-        <MessageList
-          messages={chat.messages}
-          isTyping={chat.isSending}
-          theme={theme}
-          strings={strings}
-        />
+        <MessageList messages={chat.messages} isTyping={chat.isSending} strings={strings} />
 
         {chat.error ? (
           <ErrorBanner
             message={chat.error.message}
             onRetry={() => void chat.retry()}
-            theme={theme}
             strings={strings}
           />
         ) : null}
 
-        <View style={{ paddingBottom: BOTTOM_INSET, backgroundColor: theme.background }}>
+        <ComposerWrap>
           <Composer
             onSend={(content) => void chat.send(content)}
             disabled={chat.isSending}
-            theme={theme}
             strings={strings}
           />
-        </View>
-      </KeyboardAvoider>
+        </ComposerWrap>
+      </Container>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingBottom: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  title: { fontSize: 17, fontWeight: '600' },
-  closeGlyph: { fontSize: 18, fontWeight: '600' },
-});
+const Container = styled(KeyboardAvoider)`
+  flex: 1;
+  background-color: ${t((th) => th.colors.background)};
+`;
+
+const Header = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${TOP_INSET}px ${t((th) => th.spacing.lg)}px ${t((th) => th.spacing.md)}px;
+  border-bottom-width: 0.5px;
+  border-bottom-color: ${t((th) => th.colors.border)};
+`;
+
+const HeaderTitle = styled.Text`
+  font-size: ${t((th) => th.typography.header.fontSize)}px;
+  font-weight: ${t((th) => th.typography.header.fontWeight)};
+  color: ${t((th) => th.colors.headerText)};
+`;
+
+const CloseButton = styled.Pressable``;
+
+const CloseGlyph = styled.Text`
+  font-size: 18px;
+  font-weight: 600;
+  color: ${t((th) => th.colors.muted)};
+`;
+
+const ComposerWrap = styled.View`
+  padding-bottom: ${BOTTOM_INSET}px;
+  background-color: ${t((th) => th.colors.background)};
+`;

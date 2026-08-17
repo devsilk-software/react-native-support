@@ -1,18 +1,16 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import styled from 'styled-components/native';
+import { t } from './styled';
 import type { SupportStrings } from './strings';
-import type { SupportTheme } from './theme';
 
-/** Multiline input that grows to ~4 lines, plus a send control (plan §3.1). */
+/** Multiline input that grows to a themed max height, plus a send control. */
 export function Composer({
   onSend,
   disabled,
-  theme,
   strings,
 }: {
   onSend: (content: string) => void;
   disabled: boolean;
-  theme: SupportTheme;
   strings: SupportStrings;
 }) {
   const [text, setText] = useState('');
@@ -26,64 +24,63 @@ export function Composer({
   };
 
   return (
-    <View style={[styles.row, { borderTopColor: theme.border, backgroundColor: theme.background }]}>
-      <TextInput
-        style={[
-          styles.input,
-          { backgroundColor: theme.inputBackground, color: theme.inputText },
-        ]}
+    <Row>
+      <Input
         value={text}
         onChangeText={setText}
         placeholder={strings.inputPlaceholder}
-        placeholderTextColor={theme.placeholderText}
         multiline
         maxLength={2000}
         accessibilityLabel={strings.inputPlaceholder}
         // Enter inserts a newline on multiline inputs; sending is the button's job.
       />
-      <Pressable
+      <SendButton
         onPress={submit}
         disabled={!canSend}
+        $enabled={canSend}
         accessibilityRole="button"
         accessibilityLabel={strings.send}
-        style={({ pressed }) => [
-          styles.send,
-          {
-            backgroundColor: canSend ? theme.primary : theme.border,
-            opacity: pressed ? 0.85 : 1,
-          },
-        ]}
       >
-        <Text style={styles.sendText}>{'↑'}</Text>
-      </Pressable>
-    </View>
+        <SendGlyph>{'↑'}</SendGlyph>
+      </SendButton>
+    </Row>
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    gap: 8,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  input: {
-    flex: 1,
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingTop: 9,
-    paddingBottom: 9,
-    fontSize: 15,
-    maxHeight: 96,
-  },
-  send: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sendText: { color: '#FFFFFF', fontSize: 18, fontWeight: '600' },
-});
+const Row = styled.View`
+  flex-direction: row;
+  align-items: flex-end;
+  padding: ${t((th) => th.spacing.sm)}px ${t((th) => th.spacing.sm + 2)}px;
+  gap: ${t((th) => th.spacing.sm)}px;
+  border-top-width: 0.5px;
+  border-top-color: ${t((th) => th.colors.border)};
+  background-color: ${t((th) => th.colors.background)};
+`;
+
+const Input = styled.TextInput.attrs(({ theme }) => ({
+  placeholderTextColor: t((th) => th.colors.placeholder)({ theme }),
+}))`
+  flex: 1;
+  border-radius: ${t((th) => th.radii.input)}px;
+  padding: 9px ${t((th) => th.spacing.md + 2)}px;
+  font-size: ${t((th) => th.typography.body.fontSize)}px;
+  max-height: ${t((th) => th.sizes.composerMaxHeight)}px;
+  background-color: ${t((th) => th.colors.inputBackground)};
+  color: ${t((th) => th.colors.inputText)};
+`;
+
+const SendButton = styled.Pressable<{ $enabled: boolean }>`
+  width: ${t((th) => th.sizes.sendButton)}px;
+  height: ${t((th) => th.sizes.sendButton)}px;
+  border-radius: ${t((th) => th.sizes.sendButton / 2)}px;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ $enabled, theme }) =>
+    $enabled ? t((th) => th.colors.primary)({ theme }) : t((th) => th.colors.border)({ theme })};
+`;
+
+const SendGlyph = styled.Text`
+  color: ${t((th) => th.colors.onPrimary)};
+  font-size: 18px;
+  font-weight: 600;
+`;

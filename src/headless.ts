@@ -1,5 +1,5 @@
 /**
- * Headless entry point — core + react layers only, no UI imports (plan §3).
+ * Headless entry point — core + react layers only, no UI imports.
  * The single escape hatch for apps that bring their own chat interface.
  */
 export { SupportClient } from './core/client';

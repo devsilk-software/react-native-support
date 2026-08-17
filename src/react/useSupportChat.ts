@@ -4,9 +4,9 @@ import type { Message } from '../core/types';
 import { useSupport } from './SupportContext';
 
 /**
- * Conversation state machine (plan §3): optimistic user message, pending
- * assistant turn, typed failure with retry. Non-streaming for M0/M1 — the
- * SSE upgrade in M2 changes this hook's internals, not its surface.
+ * Conversation state machine: optimistic user message, pending
+ * assistant turn, typed failure with retry. Non-streaming for now — the
+ * SSE upgrade changes this hook's internals, not its surface.
  */
 
 export interface SupportChat {

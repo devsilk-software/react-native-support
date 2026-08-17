@@ -1,4 +1,4 @@
-/** UI copy, overridable for localization via the `strings` prop (plan §2). */
+/** UI copy, overridable for localization via the `strings` prop. */
 export interface SupportStrings {
   headerTitle: string;
   inputPlaceholder: string;

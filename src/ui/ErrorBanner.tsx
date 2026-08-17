@@ -1,40 +1,47 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import styled from 'styled-components/native';
+import { t } from './styled';
 import type { SupportStrings } from './strings';
-import type { SupportTheme } from './theme';
 
-/** Inline error with retry — errors explain and offer a way forward (plan §3.1). */
+/** Inline error with retry — errors explain and offer a way forward. */
 export function ErrorBanner({
   message,
   onRetry,
-  theme,
   strings,
 }: {
   message: string;
   onRetry: () => void;
-  theme: SupportTheme;
   strings: SupportStrings;
 }) {
   return (
-    <View style={[styles.banner, { backgroundColor: theme.error }]}>
-      <Text style={[styles.text, { color: theme.errorText }]} numberOfLines={2}>
-        {message || strings.errorGeneric}
-      </Text>
-      <Pressable onPress={onRetry} accessibilityRole="button" accessibilityLabel={strings.retry}>
-        <Text style={[styles.retry, { color: theme.errorText }]}>{strings.retry}</Text>
-      </Pressable>
-    </View>
+    <Banner>
+      <BannerText numberOfLines={2}>{message || strings.errorGeneric}</BannerText>
+      <RetryButton onPress={onRetry} accessibilityRole="button" accessibilityLabel={strings.retry}>
+        <RetryText>{strings.retry}</RetryText>
+      </RetryButton>
+    </Banner>
   );
 }
 
-const styles = StyleSheet.create({
-  banner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    gap: 12,
-  },
-  text: { flex: 1, fontSize: 13, lineHeight: 18 },
-  retry: { fontSize: 13, fontWeight: '700' },
-});
+const Banner = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${t((th) => th.spacing.sm + 2)}px ${t((th) => th.spacing.md + 2)}px;
+  gap: ${t((th) => th.spacing.md)}px;
+  background-color: ${t((th) => th.colors.errorBackground)};
+`;
+
+const BannerText = styled.Text`
+  flex: 1;
+  font-size: 13px;
+  line-height: 18px;
+  color: ${t((th) => th.colors.onErrorBackground)};
+`;
+
+const RetryButton = styled.Pressable``;
+
+const RetryText = styled.Text`
+  font-size: 13px;
+  font-weight: 700;
+  color: ${t((th) => th.colors.onErrorBackground)};
+`;
