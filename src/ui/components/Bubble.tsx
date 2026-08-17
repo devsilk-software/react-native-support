@@ -41,7 +41,7 @@ export const BubbleRow = styled.View<{ $variant: BubbleVariant }>`
 export const Bubble = styled.View<{ $variant: BubbleVariant; $status?: Message['status'] }>`
   max-width: ${t((th) => th.sizes.bubbleMaxWidthPct)}%;
   padding: ${t((th) => th.spacing.sm)}px ${t((th) => th.spacing.md)}px;
-  border-radius: ${t((th) => th.radii.bubble)}px;
+  border-radius: ${t((th) => th.radius.bubble)}px;
   background-color: ${bubbleBackground};
   opacity: ${statusOpacity};
 `;

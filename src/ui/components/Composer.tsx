@@ -73,7 +73,7 @@ const Input = styled.TextInput.attrs(({ theme }) => ({
   placeholderTextColor: t((th) => th.colors.placeholder)({ theme }),
 }))`
   flex: 1;
-  border-radius: ${t((th) => th.radii.input)}px;
+  border-radius: ${t((th) => th.radius.input)}px;
   padding: ${t((th) => th.spacing.sm)}px ${t((th) => th.spacing.md)}px;
   font-size: ${t((th) => th.typography.body.fontSize)}px;
   max-height: ${t((th) => th.sizes.composerMaxHeight)}px;

@@ -41,7 +41,7 @@ export interface SupportTheme {
     muted: string;
     shadow: string;
   };
-  radii: {
+  radius: {
     bubble: number;
     input: number;
     chip: number;
@@ -133,7 +133,7 @@ export const defaultTheme: SupportTheme = {
     muted: '#8A919C',
     shadow: '#000000',
   },
-  radii: {
+  radius: {
     bubble: 16,
     input: 20,
     chip: 8,
@@ -205,7 +205,7 @@ export const defaultTheme: SupportTheme = {
 /** Deep-merge a partial override onto the defaults, one level per group. */
 export type SupportThemeOverride = {
   colors?: Partial<SupportTheme['colors']>;
-  radii?: Partial<SupportTheme['radii']>;
+  radius?: Partial<SupportTheme['radius']>;
   spacing?: Partial<SupportTheme['spacing']>;
   typography?: Partial<Record<TypographyVariant, Partial<TypographyStyle>>>;
   sizes?: Partial<SupportTheme['sizes']>;
@@ -226,7 +226,7 @@ export function mergeTheme(overrides?: SupportThemeOverride): SupportTheme {
   }
   return {
     colors: { ...defaultTheme.colors, ...overrides.colors },
-    radii: { ...defaultTheme.radii, ...overrides.radii },
+    radius: { ...defaultTheme.radius, ...overrides.radius },
     spacing: { ...defaultTheme.spacing, ...overrides.spacing },
     typography,
     sizes: { ...defaultTheme.sizes, ...overrides.sizes },

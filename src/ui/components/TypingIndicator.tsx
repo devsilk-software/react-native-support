@@ -69,7 +69,7 @@ const Bubble = styled.View`
   flex-direction: row;
   align-items: center;
   padding: ${t((th) => th.spacing.md)}px;
-  border-radius: ${t((th) => th.radii.bubble)}px;
+  border-radius: ${t((th) => th.radius.bubble)}px;
   background-color: ${t((th) => th.colors.assistantBubble)};
   gap: ${t((th) => th.spacing.xs)}px;
 `;

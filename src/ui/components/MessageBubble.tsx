@@ -53,7 +53,7 @@ const Citations = styled.View`
 const Chip = styled.View`
   border-width: ${t((th) => th.borders.hairline)}px;
   border-color: ${t((th) => th.colors.border)};
-  border-radius: ${t((th) => th.radii.chip)}px;
+  border-radius: ${t((th) => th.radius.chip)}px;
   padding: ${t((th) => th.spacing.xxs)}px ${t((th) => th.spacing.xs)}px;
   max-width: ${t((th) => th.sizes.chipMaxWidth)}px;
 `;
