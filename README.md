@@ -35,8 +35,7 @@ npm install
 npm run typecheck && npm run lint && npm test && npm run build
 ```
 
-Backed by [`support-platform`](https://github.com/devsilk-software/support-platform);
-the implementation plan lives there at `docs/implementation-plan.html`.
+Backed by [`support-platform`](https://github.com/devsilk-software/support-platform).
 
 ## Branches
 
