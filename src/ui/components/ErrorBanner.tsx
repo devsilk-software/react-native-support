@@ -33,7 +33,7 @@ const Banner = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: ${t((th) => th.spacing.sm + 2)}px ${t((th) => th.spacing.md + 2)}px;
+  padding: ${t((th) => th.spacing.sm)}px ${t((th) => th.spacing.md)}px;
   gap: ${t((th) => th.spacing.md)}px;
   background-color: ${t((th) => th.colors.errorBackground)};
 `;

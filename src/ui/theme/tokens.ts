@@ -1,9 +1,10 @@
 /**
- * Theme tokens. The chat renders inside someone else's brand, so every color,
- * radius, spacing, size, and type value is a token, overridable via the
- * `theme` prop on <SupportAI />. Components never hardcode visual values —
- * everything styled resolves through this object, and all text renders
- * through <Typography>, which reads the `typography` group.
+ * Theme tokens. The chat renders inside someone else's brand, so every visual
+ * value — color, radius, spacing, size, opacity, border, inset, shadow, and
+ * animation parameter — is a token, overridable via the `theme` prop on
+ * <SupportAI />. Components carry no literal numbers in their styles and no
+ * conditional logic in their CSS: anything variant-shaped resolves through a
+ * named lookup, and all text renders through <Typography>.
  */
 export type FontWeight = '400' | '500' | '600' | '700';
 
@@ -38,6 +39,7 @@ export interface SupportTheme {
     onErrorBackground: string;
     headerText: string;
     muted: string;
+    shadow: string;
   };
   radii: {
     bubble: number;
@@ -45,16 +47,68 @@ export interface SupportTheme {
     chip: number;
   };
   spacing: {
+    xxs: number;
     xs: number;
     sm: number;
     md: number;
     lg: number;
+    xl: number;
+    xxl: number;
   };
   typography: Record<TypographyVariant, TypographyStyle>;
   sizes: {
     floatingButton: number;
+    /** Glyph size as a fraction of the floating button, so overrides scale together. */
+    floatingButtonGlyphScale: number;
     sendButton: number;
+    /** Standalone glyphs (send ↑, close ✕). */
+    glyph: number;
     composerMaxHeight: number;
+    composerMaxLength: number;
+    typingDot: number;
+    /** Percentage of the list width a bubble may occupy. */
+    bubbleMaxWidthPct: number;
+    chipMaxWidth: number;
+    hitSlop: number;
+  };
+  opacity: {
+    /** Optimistic user message while the request is in flight. */
+    sending: number;
+    /** Message whose send failed. */
+    failed: number;
+    pressed: number;
+    /** Identity value, so resolvers never carry a literal 1. */
+    opaque: number;
+  };
+  borders: {
+    hairline: number;
+  };
+  insets: {
+    sheetTopIOS: number;
+    /** Android sheet top falls back to the runtime status-bar height. */
+    sheetTopAndroidFallback: number;
+    sheetBottomIOS: number;
+    sheetBottomAndroid: number;
+    fabBottomIOS: number;
+    fabBottomAndroid: number;
+    fabRight: number;
+  };
+  shadows: {
+    fab: {
+      elevation: number;
+      shadowOpacity: number;
+      shadowRadius: number;
+      shadowOffsetY: number;
+    };
+  };
+  animation: {
+    typingDot: {
+      durationMs: number;
+      staggerMs: number;
+      cycleGapMs: number;
+      minOpacity: number;
+      lift: number;
+    };
   };
 }
 
@@ -77,6 +131,7 @@ export const defaultTheme: SupportTheme = {
     onErrorBackground: '#B3261E',
     headerText: '#16181D',
     muted: '#8A919C',
+    shadow: '#000000',
   },
   radii: {
     bubble: 16,
@@ -84,10 +139,13 @@ export const defaultTheme: SupportTheme = {
     chip: 8,
   },
   spacing: {
+    xxs: 2,
     xs: 4,
     sm: 8,
     md: 12,
     lg: 16,
+    xl: 24,
+    xxl: 32,
   },
   typography: {
     header: { fontSize: 17, lineHeight: 22, fontWeight: '600' },
@@ -97,8 +155,50 @@ export const defaultTheme: SupportTheme = {
   },
   sizes: {
     floatingButton: 56,
+    floatingButtonGlyphScale: 0.45,
     sendButton: 36,
+    glyph: 18,
     composerMaxHeight: 96,
+    composerMaxLength: 2000,
+    typingDot: 7,
+    bubbleMaxWidthPct: 82,
+    chipMaxWidth: 160,
+    hitSlop: 12,
+  },
+  opacity: {
+    sending: 0.8,
+    failed: 0.55,
+    pressed: 0.85,
+    opaque: 1,
+  },
+  borders: {
+    hairline: 0.5,
+  },
+  insets: {
+    sheetTopIOS: 14,
+    sheetTopAndroidFallback: 24,
+    sheetBottomIOS: 24,
+    sheetBottomAndroid: 8,
+    fabBottomIOS: 40,
+    fabBottomAndroid: 24,
+    fabRight: 20,
+  },
+  shadows: {
+    fab: {
+      elevation: 6,
+      shadowOpacity: 0.2,
+      shadowRadius: 8,
+      shadowOffsetY: 4,
+    },
+  },
+  animation: {
+    typingDot: {
+      durationMs: 380,
+      staggerMs: 140,
+      cycleGapMs: 280,
+      minOpacity: 0.35,
+      lift: 3,
+    },
   },
 };
 
@@ -109,6 +209,11 @@ export type SupportThemeOverride = {
   spacing?: Partial<SupportTheme['spacing']>;
   typography?: Partial<Record<TypographyVariant, Partial<TypographyStyle>>>;
   sizes?: Partial<SupportTheme['sizes']>;
+  opacity?: Partial<SupportTheme['opacity']>;
+  borders?: Partial<SupportTheme['borders']>;
+  insets?: Partial<SupportTheme['insets']>;
+  shadows?: { fab?: Partial<SupportTheme['shadows']['fab']> };
+  animation?: { typingDot?: Partial<SupportTheme['animation']['typingDot']> };
 };
 
 export function mergeTheme(overrides?: SupportThemeOverride): SupportTheme {
@@ -125,5 +230,12 @@ export function mergeTheme(overrides?: SupportThemeOverride): SupportTheme {
     spacing: { ...defaultTheme.spacing, ...overrides.spacing },
     typography,
     sizes: { ...defaultTheme.sizes, ...overrides.sizes },
+    opacity: { ...defaultTheme.opacity, ...overrides.opacity },
+    borders: { ...defaultTheme.borders, ...overrides.borders },
+    insets: { ...defaultTheme.insets, ...overrides.insets },
+    shadows: { fab: { ...defaultTheme.shadows.fab, ...overrides.shadows?.fab } },
+    animation: {
+      typingDot: { ...defaultTheme.animation.typingDot, ...overrides.animation?.typingDot },
+    },
   };
 }

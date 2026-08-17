@@ -6,4 +6,4 @@ export type {
   TypographyStyle,
   TypographyVariant,
 } from './tokens';
-export { t, useSupportTheme } from './styled';
+export { t, useSupportTheme, variant } from './styled';

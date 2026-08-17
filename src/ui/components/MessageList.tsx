@@ -20,7 +20,10 @@ import type { SupportStrings } from '../strings';
  * bottom. Someone scrolled up reading history is never yanked away — the
  * classic chat bug this file exists to not have.
  */
+// Scroll behavior, not styling: how close to the newest message counts as "at the
+// bottom", and how often scroll events sample. Not brand-themable.
 const NEAR_BOTTOM_PX = 80;
+const SCROLL_EVENT_THROTTLE_MS = 64;
 
 export function MessageList({
   messages,
@@ -57,12 +60,12 @@ export function MessageList({
       keyExtractor={(m) => m.id}
       renderItem={({ item }) => <MessageBubble message={item} />}
       onScroll={onScroll}
-      scrollEventThrottle={64}
+      scrollEventThrottle={SCROLL_EVENT_THROTTLE_MS}
       onContentSizeChange={onContentSizeChange}
       keyboardShouldPersistTaps="handled"
       // FlatList's content container takes a style object, not a component —
       // themed values reach it via the hook instead of a styled wrapper.
-      contentContainerStyle={{ paddingVertical: theme.spacing.sm + 2, flexGrow: 1 }}
+      contentContainerStyle={{ paddingVertical: theme.spacing.sm, flexGrow: 1 }}
       ListHeaderComponent={isTyping ? <TypingIndicator /> : undefined}
       ListEmptyComponent={
         <Empty>
@@ -78,7 +81,7 @@ const Empty = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  padding: ${t((th) => th.spacing.lg * 2)}px;
+  padding: ${t((th) => th.spacing.xxl)}px;
   transform: scaleY(-1);
 `;
 

@@ -1,3 +1,5 @@
+export { Bubble, BubbleRow } from './Bubble';
+export type { BubbleVariant } from './Bubble';
 export { Composer } from './Composer';
 export { ErrorBanner } from './ErrorBanner';
 export { FloatingButton } from './FloatingButton';

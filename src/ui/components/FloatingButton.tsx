@@ -21,27 +21,32 @@ export function FloatingButton({
   );
 }
 
-const FAB_BOTTOM = Platform.OS === 'ios' ? 40 : 24;
+/** Platform selection is behavior, not styling — the values are tokens. */
+const fabBottom = t((th) =>
+  Platform.select({ ios: th.insets.fabBottomIOS, default: th.insets.fabBottomAndroid }),
+);
 
 const Fab = styled.Pressable`
   position: absolute;
-  right: ${t((th) => th.spacing.lg + 4)}px;
-  bottom: ${FAB_BOTTOM}px;
+  right: ${t((th) => th.insets.fabRight)}px;
+  bottom: ${fabBottom}px;
   width: ${t((th) => th.sizes.floatingButton)}px;
   height: ${t((th) => th.sizes.floatingButton)}px;
   border-radius: ${t((th) => th.sizes.floatingButton / 2)}px;
   align-items: center;
   justify-content: center;
   background-color: ${t((th) => th.colors.primary)};
-  elevation: 6;
-  shadow-color: #000;
-  shadow-opacity: 0.2;
-  shadow-radius: 8px;
-  shadow-offset: 0px 4px;
+  elevation: ${t((th) => th.shadows.fab.elevation)};
+  shadow-color: ${t((th) => th.colors.shadow)};
+  shadow-opacity: ${t((th) => th.shadows.fab.shadowOpacity)};
+  shadow-radius: ${t((th) => th.shadows.fab.shadowRadius)}px;
+  shadow-offset: 0px ${t((th) => th.shadows.fab.shadowOffsetY)}px;
 `;
 
 /** Glyph scales with the button, so its size derives from sizes, not typography. */
 const FabGlyph = styled(Typography)`
-  font-size: ${t((th) => Math.round(th.sizes.floatingButton * 0.45))}px;
-  line-height: ${t((th) => Math.round(th.sizes.floatingButton * 0.55))}px;
+  font-size: ${t((th) => Math.round(th.sizes.floatingButton * th.sizes.floatingButtonGlyphScale))}px;
+  line-height: ${t((th) =>
+    Math.round(th.sizes.floatingButton * th.sizes.floatingButtonGlyphScale * 1.2),
+  )}px;
 `;

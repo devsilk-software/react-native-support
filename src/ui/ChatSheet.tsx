@@ -3,17 +3,26 @@ import styled from 'styled-components/native';
 import type { SupportChat } from '../react/useSupportChat';
 import { Composer, ErrorBanner, MessageList, Typography } from './components';
 import { KeyboardAvoider, keyboardBehavior } from './useKeyboard';
-import { t } from './theme';
+import { t, useSupportTheme } from './theme';
 import type { SupportStrings } from './strings';
 
 /**
  * Full-screen chat sheet: header, list, error banner, composer, inside the
- * normalised keyboard avoider. Safe-area handling uses StatusBar height plus
- * a platform constant; react-native-safe-area-context becomes an optional
- * upgrade later, same pattern as the keyboard library.
+ * normalised keyboard avoider. Safe-area handling uses inset tokens, with
+ * Android's top inset falling back to the runtime status-bar height;
+ * react-native-safe-area-context becomes an optional upgrade later, same
+ * pattern as the keyboard library.
  */
-const TOP_INSET = Platform.OS === 'ios' ? 14 : (StatusBar.currentHeight ?? 24);
-const BOTTOM_INSET = Platform.OS === 'ios' ? 24 : 8;
+const sheetTop = t((th) =>
+  Platform.select({
+    ios: th.insets.sheetTopIOS,
+    default: StatusBar.currentHeight ?? th.insets.sheetTopAndroidFallback,
+  }),
+);
+
+const sheetBottom = t((th) =>
+  Platform.select({ ios: th.insets.sheetBottomIOS, default: th.insets.sheetBottomAndroid }),
+);
 
 export function ChatSheet({
   visible,
@@ -26,6 +35,7 @@ export function ChatSheet({
   chat: SupportChat;
   strings: SupportStrings;
 }) {
+  const theme = useSupportTheme();
   return (
     <Modal
       visible={visible}
@@ -42,7 +52,7 @@ export function ChatSheet({
             onPress={onClose}
             accessibilityRole="button"
             accessibilityLabel={strings.close}
-            hitSlop={12}
+            hitSlop={theme.sizes.hitSlop}
           >
             <CloseGlyph variant="header" color="muted">
               ✕
@@ -81,8 +91,8 @@ const Header = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: ${TOP_INSET}px ${t((th) => th.spacing.lg)}px ${t((th) => th.spacing.md)}px;
-  border-bottom-width: 0.5px;
+  padding: ${sheetTop}px ${t((th) => th.spacing.lg)}px ${t((th) => th.spacing.md)}px;
+  border-bottom-width: ${t((th) => th.borders.hairline)}px;
   border-bottom-color: ${t((th) => th.colors.border)};
 `;
 
@@ -90,10 +100,10 @@ const CloseButton = styled.Pressable``;
 
 /** The close glyph borrows the header variant; only its size is glyph-specific. */
 const CloseGlyph = styled(Typography)`
-  font-size: 18px;
+  font-size: ${t((th) => th.sizes.glyph)}px;
 `;
 
 const ComposerWrap = styled.View`
-  padding-bottom: ${BOTTOM_INSET}px;
+  padding-bottom: ${sheetBottom}px;
   background-color: ${t((th) => th.colors.background)};
 `;
