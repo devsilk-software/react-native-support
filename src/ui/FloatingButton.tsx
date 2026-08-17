@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import styled from 'styled-components/native';
+import { Typography } from './Typography';
 import { t } from './styled';
 import type { SupportStrings } from './strings';
 
@@ -13,7 +14,9 @@ export function FloatingButton({
 }) {
   return (
     <Fab onPress={onPress} accessibilityRole="button" accessibilityLabel={strings.openSupport}>
-      <FabGlyph>{'?'}</FabGlyph>
+      <FabGlyph variant="header" color="onPrimary" weight="700">
+        {'?'}
+      </FabGlyph>
     </Fab>
   );
 }
@@ -37,8 +40,8 @@ const Fab = styled.Pressable`
   shadow-offset: 0px 4px;
 `;
 
-const FabGlyph = styled.Text`
-  color: ${t((th) => th.colors.onPrimary)};
+/** Glyph scales with the button, so its size derives from sizes, not typography. */
+const FabGlyph = styled(Typography)`
   font-size: ${t((th) => Math.round(th.sizes.floatingButton * 0.45))}px;
-  font-weight: 700;
+  line-height: ${t((th) => Math.round(th.sizes.floatingButton * 0.55))}px;
 `;

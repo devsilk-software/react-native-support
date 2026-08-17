@@ -4,6 +4,7 @@ import type { SupportChat } from '../react/useSupportChat';
 import { Composer } from './Composer';
 import { ErrorBanner } from './ErrorBanner';
 import { MessageList } from './MessageList';
+import { Typography } from './Typography';
 import { KeyboardAvoider, keyboardBehavior } from './useKeyboard';
 import { t } from './styled';
 import type { SupportStrings } from './strings';
@@ -37,14 +38,18 @@ export function ChatSheet({
     >
       <Container behavior={keyboardBehavior}>
         <Header>
-          <HeaderTitle>{strings.headerTitle}</HeaderTitle>
+          <Typography variant="header" color="headerText">
+            {strings.headerTitle}
+          </Typography>
           <CloseButton
             onPress={onClose}
             accessibilityRole="button"
             accessibilityLabel={strings.close}
             hitSlop={12}
           >
-            <CloseGlyph>✕</CloseGlyph>
+            <CloseGlyph variant="header" color="muted">
+              ✕
+            </CloseGlyph>
           </CloseButton>
         </Header>
 
@@ -84,18 +89,11 @@ const Header = styled.View`
   border-bottom-color: ${t((th) => th.colors.border)};
 `;
 
-const HeaderTitle = styled.Text`
-  font-size: ${t((th) => th.typography.header.fontSize)}px;
-  font-weight: ${t((th) => th.typography.header.fontWeight)};
-  color: ${t((th) => th.colors.headerText)};
-`;
-
 const CloseButton = styled.Pressable``;
 
-const CloseGlyph = styled.Text`
+/** The close glyph borrows the header variant; only its size is glyph-specific. */
+const CloseGlyph = styled(Typography)`
   font-size: 18px;
-  font-weight: 600;
-  color: ${t((th) => th.colors.muted)};
 `;
 
 const ComposerWrap = styled.View`

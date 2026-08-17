@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { Typography } from './Typography';
 import { t } from './styled';
 import type { SupportStrings } from './strings';
 
@@ -14,9 +15,15 @@ export function ErrorBanner({
 }) {
   return (
     <Banner>
-      <BannerText numberOfLines={2}>{message || strings.errorGeneric}</BannerText>
+      <Grow>
+        <Typography variant="label" color="onErrorBackground" numberOfLines={2}>
+          {message || strings.errorGeneric}
+        </Typography>
+      </Grow>
       <RetryButton onPress={onRetry} accessibilityRole="button" accessibilityLabel={strings.retry}>
-        <RetryText>{strings.retry}</RetryText>
+        <Typography variant="label" color="onErrorBackground" weight="700">
+          {strings.retry}
+        </Typography>
       </RetryButton>
     </Banner>
   );
@@ -31,17 +38,8 @@ const Banner = styled.View`
   background-color: ${t((th) => th.colors.errorBackground)};
 `;
 
-const BannerText = styled.Text`
+const Grow = styled.View`
   flex: 1;
-  font-size: 13px;
-  line-height: 18px;
-  color: ${t((th) => th.colors.onErrorBackground)};
 `;
 
 const RetryButton = styled.Pressable``;
-
-const RetryText = styled.Text`
-  font-size: 13px;
-  font-weight: 700;
-  color: ${t((th) => th.colors.onErrorBackground)};
-`;

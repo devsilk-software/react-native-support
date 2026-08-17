@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components/native';
+import { Typography } from './Typography';
 import { t } from './styled';
 import type { SupportStrings } from './strings';
 
@@ -41,7 +42,9 @@ export function Composer({
         accessibilityRole="button"
         accessibilityLabel={strings.send}
       >
-        <SendGlyph>{'↑'}</SendGlyph>
+        <SendGlyph variant="header" color="onPrimary" weight="600">
+          {'↑'}
+        </SendGlyph>
       </SendButton>
     </Row>
   );
@@ -79,8 +82,7 @@ const SendButton = styled.Pressable<{ $enabled: boolean }>`
     $enabled ? t((th) => th.colors.primary)({ theme }) : t((th) => th.colors.border)({ theme })};
 `;
 
-const SendGlyph = styled.Text`
-  color: ${t((th) => th.colors.onPrimary)};
+/** Glyph sizing is the only thing not covered by the header variant. */
+const SendGlyph = styled(Typography)`
   font-size: 18px;
-  font-weight: 600;
 `;

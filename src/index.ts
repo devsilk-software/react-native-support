@@ -4,8 +4,15 @@
  */
 export { SupportAI } from './ui/SupportAI';
 export type { SupportAIProps } from './ui/SupportAI';
+export { Typography } from './ui/Typography';
+export type { TypographyProps } from './ui/Typography';
 export { defaultTheme } from './ui/theme';
-export type { SupportTheme, SupportThemeOverride } from './ui/theme';
+export type {
+  SupportTheme,
+  SupportThemeOverride,
+  TypographyStyle,
+  TypographyVariant,
+} from './ui/theme';
 export { defaultStrings } from './ui/strings';
 export type { SupportStrings } from './ui/strings';
 

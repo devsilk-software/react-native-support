@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import styled from 'styled-components/native';
 import type { Message } from '../core/types';
+import { Typography } from './Typography';
 import { t } from './styled';
 
 /**
@@ -12,14 +13,16 @@ export const MessageBubble = memo(function MessageBubble({ message }: { message:
   return (
     <Row $isUser={isUser} accessibilityRole="text">
       <Bubble $isUser={isUser} $status={message.status}>
-        <BubbleText selectable $isUser={isUser}>
+        <Typography selectable color={isUser ? 'onUserBubble' : 'onAssistantBubble'}>
           {message.content}
-        </BubbleText>
+        </Typography>
         {message.citations && message.citations.length > 0 ? (
           <Citations>
             {message.citations.map((c, i) => (
               <Chip key={`${c.documentId}-${i}`}>
-                <ChipText numberOfLines={1}>{c.title ?? 'Source'}</ChipText>
+                <Typography variant="caption" color="muted" numberOfLines={1}>
+                  {c.title ?? 'Source'}
+                </Typography>
               </Chip>
             ))}
           </Citations>
@@ -47,15 +50,6 @@ const Bubble = styled.View<{ $isUser: boolean; $status?: Message['status'] }>`
   opacity: ${({ $status }) => ($status === 'failed' ? 0.55 : $status === 'sending' ? 0.8 : 1)};
 `;
 
-const BubbleText = styled.Text<{ $isUser: boolean }>`
-  color: ${({ $isUser, theme }) =>
-    $isUser
-      ? t((th) => th.colors.onUserBubble)({ theme })
-      : t((th) => th.colors.onAssistantBubble)({ theme })};
-  font-size: ${t((th) => th.typography.body.fontSize)}px;
-  line-height: ${t((th) => th.typography.body.lineHeight)}px;
-`;
-
 const Citations = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
@@ -69,9 +63,4 @@ const Chip = styled.View`
   border-radius: ${t((th) => th.radii.chip)}px;
   padding: 2px ${t((th) => th.spacing.xs + 2)}px;
   max-width: 160px;
-`;
-
-const ChipText = styled.Text`
-  color: ${t((th) => th.colors.muted)};
-  font-size: ${t((th) => th.typography.caption.fontSize)}px;
 `;

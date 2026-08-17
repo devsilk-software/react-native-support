@@ -7,6 +7,7 @@ import {
 import styled from 'styled-components/native';
 import type { Message } from '../core/types';
 import { MessageBubble } from './MessageBubble';
+import { Typography } from './Typography';
 import { TypingIndicator } from './TypingIndicator';
 import { t, useSupportTheme } from './styled';
 import type { SupportStrings } from './strings';
@@ -65,7 +66,7 @@ export function MessageList({
       ListHeaderComponent={isTyping ? <TypingIndicator /> : undefined}
       ListEmptyComponent={
         <Empty>
-          <EmptyText>{strings.emptyState}</EmptyText>
+          <CenteredBody color="muted">{strings.emptyState}</CenteredBody>
         </Empty>
       }
     />
@@ -81,9 +82,6 @@ const Empty = styled.View`
   transform: scaleY(-1);
 `;
 
-const EmptyText = styled.Text`
-  font-size: 14px;
-  line-height: 20px;
+const CenteredBody = styled(Typography)`
   text-align: center;
-  color: ${t((th) => th.colors.muted)};
 `;
