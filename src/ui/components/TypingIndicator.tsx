@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Animated, Easing } from 'react-native';
 import styled from 'styled-components/native';
-import { t } from './styled';
+import { t } from '../theme';
 
 /** Three pulsing dots while the assistant turn is in flight. */
 export function TypingIndicator() {

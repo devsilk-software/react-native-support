@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components/native';
 import { Typography } from './Typography';
-import { t } from './styled';
-import type { SupportStrings } from './strings';
+import { t } from '../theme';
+import type { SupportStrings } from '../strings';
 
 /** Multiline input that grows to a themed max height, plus a send control. */
 export function Composer({

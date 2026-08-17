@@ -1,8 +1,8 @@
 import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { Typography } from './Typography';
-import { t } from './styled';
-import type { SupportStrings } from './strings';
+import { t } from '../theme';
+import type { SupportStrings } from '../strings';
 
 /** Absolute-positioned FAB that opens the chat. */
 export function FloatingButton({

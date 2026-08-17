@@ -1,12 +1,9 @@
 import { Modal, Platform, StatusBar } from 'react-native';
 import styled from 'styled-components/native';
 import type { SupportChat } from '../react/useSupportChat';
-import { Composer } from './Composer';
-import { ErrorBanner } from './ErrorBanner';
-import { MessageList } from './MessageList';
-import { Typography } from './Typography';
+import { Composer, ErrorBanner, MessageList, Typography } from './components';
 import { KeyboardAvoider, keyboardBehavior } from './useKeyboard';
-import { t } from './styled';
+import { t } from './theme';
 import type { SupportStrings } from './strings';
 
 /**

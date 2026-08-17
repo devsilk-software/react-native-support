@@ -4,8 +4,8 @@
  */
 export { SupportAI } from './ui/SupportAI';
 export type { SupportAIProps } from './ui/SupportAI';
-export { Typography } from './ui/Typography';
-export type { TypographyProps } from './ui/Typography';
+export { Typography } from './ui/components';
+export type { TypographyProps } from './ui/components';
 export { defaultTheme } from './ui/theme';
 export type {
   SupportTheme,

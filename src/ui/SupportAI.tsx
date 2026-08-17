@@ -3,7 +3,7 @@ import { ThemeProvider } from 'styled-components/native';
 import { SupportProvider } from '../react/SupportContext';
 import { useSupportChat } from '../react/useSupportChat';
 import { ChatSheet } from './ChatSheet';
-import { FloatingButton } from './FloatingButton';
+import { FloatingButton } from './components';
 import { MaybeKeyboardProvider } from './useKeyboard';
 import { mergeStrings, type SupportStrings } from './strings';
 import { mergeTheme, type SupportThemeOverride } from './theme';

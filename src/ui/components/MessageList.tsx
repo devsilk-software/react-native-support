@@ -5,12 +5,12 @@ import {
   type NativeSyntheticEvent,
 } from 'react-native';
 import styled from 'styled-components/native';
-import type { Message } from '../core/types';
+import type { Message } from '../../core/types';
 import { MessageBubble } from './MessageBubble';
 import { Typography } from './Typography';
 import { TypingIndicator } from './TypingIndicator';
-import { t, useSupportTheme } from './styled';
-import type { SupportStrings } from './strings';
+import { t, useSupportTheme } from '../theme';
+import type { SupportStrings } from '../strings';
 
 /**
  * Inverted FlatList — React Native's virtualised, bottom-anchored list.

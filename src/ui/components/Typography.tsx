@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { TextProps } from 'react-native';
 import styled from 'styled-components/native';
-import type { SupportTheme, TypographyVariant } from './theme';
+import type { SupportTheme, TypographyVariant } from '../theme';
 
 /**
  * The single way text is rendered inside the chat. No component in ui/ uses a

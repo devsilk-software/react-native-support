@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import { Typography } from './Typography';
-import { t } from './styled';
-import type { SupportStrings } from './strings';
+import { t } from '../theme';
+import type { SupportStrings } from '../strings';
 
 /** Inline error with retry — errors explain and offer a way forward. */
 export function ErrorBanner({

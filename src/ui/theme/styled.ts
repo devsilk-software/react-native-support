@@ -1,5 +1,5 @@
 import { useTheme as useStyledTheme } from 'styled-components/native';
-import type { SupportTheme } from './theme';
+import type { SupportTheme } from './tokens';
 
 /**
  * Theme access for styled-components without global DefaultTheme augmentation.

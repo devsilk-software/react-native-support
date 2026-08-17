@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import styled from 'styled-components/native';
-import type { Message } from '../core/types';
+import type { Message } from '../../core/types';
 import { Typography } from './Typography';
-import { t } from './styled';
+import { t } from '../theme';
 
 /**
  * One message. Memoised so streaming and status flips only re-render the
