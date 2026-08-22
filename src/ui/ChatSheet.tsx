@@ -2,7 +2,7 @@ import { Modal } from 'react-native';
 import styled from 'styled-components/native';
 import type { SupportChat } from '../react/useSupportChat';
 import { Composer, ErrorBanner, MessageList, Typography } from './components';
-import { KeyboardAvoider, keyboardBehavior } from './useKeyboard';
+import { KeyboardAvoider } from './useKeyboard';
 import { MaybeSafeAreaProvider, useChatInsets } from './useSafeArea';
 import { t, useSupportTheme } from './theme';
 import type { SupportStrings } from './strings';
@@ -52,7 +52,7 @@ function SheetBody({
   const theme = useSupportTheme();
   const { headerTop, composerBottom } = useChatInsets();
   return (
-    <Container behavior={keyboardBehavior}>
+    <Container>
       <Header $top={headerTop}>
         <Typography variant="header" color="headerText">
           {strings.headerTitle}
@@ -104,7 +104,15 @@ const Header = styled.View<{ $top: number }>`
   border-bottom-color: ${t((th) => th.colors.border)};
 `;
 
-const CloseButton = styled.Pressable``;
+/**
+ * A real touch target, not a bare glyph: inside a pageSheet the top strip
+ * competes with iOS's drag-to-dismiss gesture, so the button needs size of
+ * its own for reliable taps (and 44pt is the platform minimum anyway).
+ */
+const CloseButton = styled.Pressable`
+  padding: ${t((th) => th.spacing.sm)}px ${t((th) => th.spacing.md)}px;
+  margin-right: -${t((th) => th.spacing.md)}px;
+`;
 
 /** The close glyph borrows the header variant; only its size is glyph-specific. */
 const CloseGlyph = styled(Typography)`

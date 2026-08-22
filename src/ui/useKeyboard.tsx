@@ -1,18 +1,27 @@
-import type { ComponentType, ReactNode } from 'react';
+import { useEffect, useState, type ComponentType, type ReactNode } from 'react';
 import {
-  KeyboardAvoidingView as RNKeyboardAvoidingView,
+  Dimensions,
+  Keyboard,
+  LayoutAnimation,
   Platform,
+  View,
   type KeyboardAvoidingViewProps,
+  type KeyboardEvent,
+  type ViewProps,
 } from 'react-native';
 
 /**
  * Keyboard handling.
  *
  * `react-native-keyboard-controller` is an optional peer: present (dev build /
- * bare RN) → best-in-class interactive tracking; absent (Expo Go) → RN's
- * built-in KeyboardAvoidingView. The two implementations take different props,
- * so this module normalises to one minimal surface instead of spreading
- * through — options only the native one understands must not silently no-op.
+ * bare RN) → best-in-class interactive tracking; absent (Expo Go) → our own
+ * frame-listener fallback below.
+ *
+ * The fallback is deliberately NOT React Native's KeyboardAvoidingView: KAV
+ * measures against the screen, and inside a pageSheet Modal (exactly where
+ * this chat lives) the window is offset, so KAV computes zero and the
+ * keyboard covers the composer. Listening to the keyboard's end frame and
+ * padding by the overlap works in every presentation style.
  *
  * The require MUST be a literal, directly inside try/catch, in this scope:
  * that exact shape is what Metro's optional-dependency detection looks for.
@@ -35,11 +44,71 @@ try {
 
 export const hasKeyboardController = kc != null;
 
-/** Normalised avoider: identical usage on both paths. */
-export const KeyboardAvoider: ComponentType<KeyboardAvoidingViewProps> =
-  kc?.KeyboardAvoidingView ?? RNKeyboardAvoidingView;
+/**
+ * Pads its content by the keyboard's overlap with the window bottom.
+ *
+ * iOS only: Android windows use adjustResize, where the OS shrinks the window
+ * itself when the keyboard shows — adding padding on top of that would
+ * compensate twice (and with a hardware keyboard attached, Android reports a
+ * phantom input-tray inset with no keyboard on screen at all). On Android
+ * this component is a plain View.
+ */
+function FrameListenerAvoider({ children, style, ...rest }: ViewProps) {
+  const [keyboardPad, setKeyboardPad] = useState(0);
 
-export const keyboardBehavior = Platform.OS === 'ios' ? ('padding' as const) : undefined;
+  useEffect(() => {
+    if (Platform.OS !== 'ios') return;
+    const animate = () => {
+      try {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      } catch {
+        // LayoutAnimation is best-effort; padding still applies without it.
+      }
+    };
+    const onFrame = (e: KeyboardEvent) => {
+      animate();
+      const overlap = Math.max(
+        0,
+        Dimensions.get('window').height - e.endCoordinates.screenY,
+      );
+      setKeyboardPad(overlap);
+    };
+    const onHide = () => {
+      animate();
+      setKeyboardPad(0);
+    };
+    const subs = [
+      Keyboard.addListener('keyboardWillChangeFrame', onFrame),
+      Keyboard.addListener('keyboardWillHide', onHide),
+    ];
+    return () => subs.forEach((s) => s.remove());
+  }, []);
+
+  return (
+    <View {...rest} style={[style, { paddingBottom: keyboardPad }]}>
+      {children}
+    </View>
+  );
+}
+
+/** With the native library: its avoider in padding mode. Without: the frame listener. */
+function ControllerAvoider({ children, style, ...rest }: ViewProps) {
+  const Avoider = (kc as KeyboardControllerModule).KeyboardAvoidingView;
+  return (
+    <Avoider behavior="padding" style={style} {...rest}>
+      {children}
+    </Avoider>
+  );
+}
+
+/**
+ * Normalised avoider: plain View props, keyboard strategy chosen internally.
+ * Callers never pass `behavior` — the right mode is an implementation detail
+ * of each path.
+ */
+export const KeyboardAvoider: ComponentType<ViewProps> = kc
+  ? ControllerAvoider
+  : FrameListenerAvoider;
 
 /**
  * Mounts KeyboardProvider only when the library is present — and relies on the
