@@ -3,3 +3,7 @@ lib/
 coverage/
 *.tsbuildinfo
 .DS_Store
+.claude/
+
+# expo local state
+.expo/

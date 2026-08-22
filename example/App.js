@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { SupportAI } from 'react-native-support';
 
 /**
@@ -10,7 +10,12 @@ import { SupportAI } from 'react-native-support';
  * it never counts toward quota.
  */
 const API_KEY = 'rns_pk_test_PASTE_FROM_SEED';
-const API_URL = 'http://localhost:3000';
+// The Android emulator's "localhost" is the emulator itself; the host machine
+// is reachable at 10.0.2.2. iOS simulators share the host's loopback.
+const API_URL = Platform.select({
+  android: 'http://10.0.2.2:3000',
+  default: 'http://localhost:3000',
+});
 
 export default function App() {
   return (
@@ -23,7 +28,7 @@ export default function App() {
         apiKey={API_KEY}
         apiUrl={API_URL}
         // Every visual value is a theme token — override any group partially:
-        theme={{ colors: { primary: '#0E7C86', userBubble: '#0E7C86' } }}
+        theme={{ colors: { primary: "#0E7C86", userBubble: "#0E7C86" } }}
       />
       <StatusBar style="auto" />
     </View>

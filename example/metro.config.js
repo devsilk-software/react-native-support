@@ -14,11 +14,29 @@ const config = getDefaultConfig(projectRoot);
 
 config.watchFolders = [workspaceRoot];
 
-// Example's node_modules first, repo root's second (for the SDK's own deps).
+// Fallback lookup for the SDK's own runtime deps (styled-components) that npm
+// may not have placed in the example's tree.
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ];
+
+// The repo root's node_modules holds the SDK's DEV copies of react and
+// react-native (different versions than Expo Go ships). Files under ../src
+// must never resolve those — blocking them forces the fallback above to the
+// example's copies, keeping exactly one React in the bundle. The trailing
+// slash keeps react-native-support itself resolvable.
+const block = (name) =>
+  `${workspaceRoot.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/node_modules/${name}/.*`;
+const defaults = config.resolver.blockList;
+const defaultSources = (Array.isArray(defaults) ? defaults : [defaults])
+  .filter(Boolean)
+  .map((re) => re.source);
+config.resolver.blockList = new RegExp(
+  [...defaultSources, block('react'), block('react-native'), block('react-dom')]
+    .map((s) => `(${s})`)
+    .join('|'),
+);
 
 // Resolve ONLY react-native-support to its TypeScript source. Everything else
 // resolves normally — a global 'source' condition would drag every package
