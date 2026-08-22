@@ -25,10 +25,18 @@ export interface SupportAIProps {
   apiUrl: string;
   theme?: SupportThemeOverride;
   strings?: Partial<SupportStrings>;
+  /** Open the chat sheet on mount — e.g. when deep-linking straight into support. */
+  defaultOpen?: boolean;
 }
 
-function SupportAIInner({ strings }: { strings: SupportStrings }) {
-  const [open, setOpen] = useState(false);
+function SupportAIInner({
+  strings,
+  defaultOpen,
+}: {
+  strings: SupportStrings;
+  defaultOpen: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
   const chat = useSupportChat();
   return (
     <>
@@ -43,13 +51,19 @@ function SupportAIInner({ strings }: { strings: SupportStrings }) {
   );
 }
 
-export function SupportAI({ apiKey, apiUrl, theme, strings }: SupportAIProps) {
+export function SupportAI({
+  apiKey,
+  apiUrl,
+  theme,
+  strings,
+  defaultOpen = false,
+}: SupportAIProps) {
   return (
     <SupportProvider apiKey={apiKey} apiUrl={apiUrl}>
       <ThemeProvider theme={mergeTheme(theme)}>
         <MaybeSafeAreaProvider>
           <MaybeKeyboardProvider>
-            <SupportAIInner strings={mergeStrings(strings)} />
+            <SupportAIInner strings={mergeStrings(strings)} defaultOpen={defaultOpen} />
           </MaybeKeyboardProvider>
         </MaybeSafeAreaProvider>
       </ThemeProvider>
