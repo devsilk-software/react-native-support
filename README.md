@@ -22,6 +22,9 @@ export default function App() {
   of failing: install `react-native-keyboard-controller` (dev build) and the
   chat silently upgrades to interactive keyboard tracking; without it, React
   Native's built-in `KeyboardAvoidingView` is used and Expo Go works as-is.
+  `react-native-safe-area-context` is detected the same way — it ships in Expo
+  Go and with React Navigation, so most apps get real device insets; apps
+  without it fall back to sensible static values.
 - **Three layers** — `core` (pure TS, no React), `react` (provider + hooks),
   `ui` (components). `react-native-support/headless` exposes core + react for
   apps that bring their own chat interface.

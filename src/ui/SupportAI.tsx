@@ -5,6 +5,7 @@ import { useSupportChat } from '../react/useSupportChat';
 import { ChatSheet } from './ChatSheet';
 import { FloatingButton } from './components';
 import { MaybeKeyboardProvider } from './useKeyboard';
+import { MaybeSafeAreaProvider } from './useSafeArea';
 import { mergeStrings, type SupportStrings } from './strings';
 import { mergeTheme, type SupportThemeOverride } from './theme';
 
@@ -46,9 +47,11 @@ export function SupportAI({ apiKey, apiUrl, theme, strings }: SupportAIProps) {
   return (
     <SupportProvider apiKey={apiKey} apiUrl={apiUrl}>
       <ThemeProvider theme={mergeTheme(theme)}>
-        <MaybeKeyboardProvider>
-          <SupportAIInner strings={mergeStrings(strings)} />
-        </MaybeKeyboardProvider>
+        <MaybeSafeAreaProvider>
+          <MaybeKeyboardProvider>
+            <SupportAIInner strings={mergeStrings(strings)} />
+          </MaybeKeyboardProvider>
+        </MaybeSafeAreaProvider>
       </ThemeProvider>
     </SupportProvider>
   );

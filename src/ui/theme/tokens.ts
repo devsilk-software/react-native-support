@@ -83,14 +83,25 @@ export interface SupportTheme {
   borders: {
     hairline: number;
   };
+  /**
+   * With react-native-safe-area-context present (Expo Go, most real apps),
+   * real device insets drive layout and the Min/Offset values act as floors
+   * and offsets on top of them. The Fallback values only apply in bare RN
+   * apps without the library.
+   */
   insets: {
-    sheetTopIOS: number;
-    /** Android sheet top falls back to the runtime status-bar height. */
+    /** Aesthetic minimum padding under the sheet's top edge. */
+    sheetTopMin: number;
+    /** No library and no StatusBar height: assumed Android status bar. */
     sheetTopAndroidFallback: number;
-    sheetBottomIOS: number;
-    sheetBottomAndroid: number;
-    fabBottomIOS: number;
-    fabBottomAndroid: number;
+    /** Minimum padding under the composer. */
+    sheetBottomMin: number;
+    /** No library on iOS: assumed home-indicator clearance. */
+    sheetBottomFallbackIOS: number;
+    /** FAB distance above the bottom inset. */
+    fabBottomOffset: number;
+    /** No library on iOS: assumed inset + offset combined. */
+    fabBottomFallbackIOS: number;
     fabRight: number;
   };
   shadows: {
@@ -175,12 +186,12 @@ export const defaultTheme: SupportTheme = {
     hairline: 0.5,
   },
   insets: {
-    sheetTopIOS: 14,
+    sheetTopMin: 14,
     sheetTopAndroidFallback: 24,
-    sheetBottomIOS: 24,
-    sheetBottomAndroid: 8,
-    fabBottomIOS: 40,
-    fabBottomAndroid: 24,
+    sheetBottomMin: 8,
+    sheetBottomFallbackIOS: 24,
+    fabBottomOffset: 24,
+    fabBottomFallbackIOS: 40,
     fabRight: 20,
   },
   shadows: {

@@ -1,6 +1,6 @@
-import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { Typography } from './Typography';
+import { useChatInsets } from '../useSafeArea';
 import { t } from '../theme';
 import type { SupportStrings } from '../strings';
 
@@ -12,8 +12,14 @@ export function FloatingButton({
   onPress: () => void;
   strings: SupportStrings;
 }) {
+  const { fabBottom } = useChatInsets();
   return (
-    <Fab onPress={onPress} accessibilityRole="button" accessibilityLabel={strings.openSupport}>
+    <Fab
+      onPress={onPress}
+      $bottom={fabBottom}
+      accessibilityRole="button"
+      accessibilityLabel={strings.openSupport}
+    >
       <FabGlyph variant="header" color="onPrimary" weight="700">
         {'?'}
       </FabGlyph>
@@ -21,15 +27,10 @@ export function FloatingButton({
   );
 }
 
-/** Platform selection is behavior, not styling — the values are tokens. */
-const fabBottom = t((th) =>
-  Platform.select({ ios: th.insets.fabBottomIOS, default: th.insets.fabBottomAndroid }),
-);
-
-const Fab = styled.Pressable`
+const Fab = styled.Pressable<{ $bottom: number }>`
   position: absolute;
   right: ${t((th) => th.insets.fabRight)}px;
-  bottom: ${fabBottom}px;
+  bottom: ${({ $bottom }) => $bottom}px;
   width: ${t((th) => th.sizes.floatingButton)}px;
   height: ${t((th) => th.sizes.floatingButton)}px;
   border-radius: ${t((th) => th.sizes.floatingButton / 2)}px;
