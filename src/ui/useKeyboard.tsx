@@ -4,7 +4,6 @@ import {
   Platform,
   type KeyboardAvoidingViewProps,
 } from 'react-native';
-import { tryRequire } from '../core/tryRequire';
 
 /**
  * Keyboard handling.
@@ -14,6 +13,11 @@ import { tryRequire } from '../core/tryRequire';
  * built-in KeyboardAvoidingView. The two implementations take different props,
  * so this module normalises to one minimal surface instead of spreading
  * through — options only the native one understands must not silently no-op.
+ *
+ * The require MUST be a literal, directly inside try/catch, in this scope:
+ * that exact shape is what Metro's optional-dependency detection looks for.
+ * Wrapping it in a helper or closure turns a missing optional module into a
+ * BUILD error instead of a caught runtime one.
  */
 
 interface KeyboardControllerModule {
@@ -21,10 +25,13 @@ interface KeyboardControllerModule {
   KeyboardProvider: ComponentType<{ children: ReactNode }>;
 }
 
-const kc = tryRequire(
+let kc: KeyboardControllerModule | null = null;
+try {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  () => require('react-native-keyboard-controller') as KeyboardControllerModule,
-);
+  kc = require('react-native-keyboard-controller') as KeyboardControllerModule;
+} catch {
+  kc = null;
+}
 
 export const hasKeyboardController = kc != null;
 

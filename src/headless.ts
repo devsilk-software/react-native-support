@@ -6,7 +6,6 @@ export { SupportClient } from './core/client';
 export type { SendMessageInput, SendMessageResult } from './core/client';
 export { SupportApiError, SupportNetworkError, isRetryable } from './core/errors';
 export { generateId } from './core/ids';
-export { tryRequire } from './core/tryRequire';
 export type {
   ApiErrorBody,
   BootstrapRequest,

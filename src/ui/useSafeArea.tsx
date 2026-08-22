@@ -1,6 +1,5 @@
 import type { ComponentType, ReactNode } from 'react';
 import { Platform, StatusBar } from 'react-native';
-import { tryRequire } from '../core/tryRequire';
 import { useSupportTheme } from './theme';
 
 /**
@@ -11,6 +10,11 @@ import { useSupportTheme } from './theme';
  * per-device insets drive the layout. Absent (bare RN without the lib), the
  * inset tokens provide a static approximation. Either way the SDK installs
  * with no native build.
+ *
+ * The require MUST be a literal, directly inside try/catch, in this scope:
+ * that exact shape is what Metro's optional-dependency detection looks for.
+ * Wrapping it in a helper or closure turns a missing optional module into a
+ * BUILD error instead of a caught runtime one.
  */
 
 interface EdgeInsets {
@@ -25,10 +29,13 @@ interface SafeAreaContextModule {
   useSafeAreaInsets: () => EdgeInsets;
 }
 
-const sac = tryRequire(
+let sac: SafeAreaContextModule | null = null;
+try {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  () => require('react-native-safe-area-context') as SafeAreaContextModule,
-);
+  sac = require('react-native-safe-area-context') as SafeAreaContextModule;
+} catch {
+  sac = null;
+}
 
 export const hasSafeAreaContext = sac != null;
 

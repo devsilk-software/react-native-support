@@ -1,5 +1,4 @@
 import { generateId } from '../ids';
-import { tryRequire } from '../tryRequire';
 
 describe('generateId', () => {
   it('prefixes and is unique across a burst', () => {
@@ -9,16 +8,3 @@ describe('generateId', () => {
   });
 });
 
-describe('tryRequire', () => {
-  it('returns the module when the loader succeeds', () => {
-    expect(tryRequire(() => ({ ok: true }))).toEqual({ ok: true });
-  });
-
-  it('returns null when the loader throws (module absent)', () => {
-    expect(
-      tryRequire(() => {
-        throw new Error('Cannot find module');
-      }),
-    ).toBeNull();
-  });
-});
