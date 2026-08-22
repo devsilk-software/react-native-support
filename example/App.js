@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SupportAI } from 'react-native-support';
 
 /**
- * Minimal host app: some content, plus <SupportAI /> — the plan-§2 shape.
+ * Minimal host app: some content, plus <SupportAI />
  *
  * Point apiUrl at your running support-platform (next dev → http://localhost:3000,
  * or your deployment) and paste a key from `pnpm db:seed`. Use the *test* key:
