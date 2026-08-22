@@ -4,9 +4,8 @@ const path = require('path');
 /**
  * The example depends on the LOCAL SDK, not a published version:
  * package.json declares `react-native-support: file:..` and this config makes
- * Metro actually honor that — watching the repo root and resolving the
- * package's `source` condition, so edits under ../src reload the app live
- * with no rebuild step.
+ * Metro honor that — watching the repo root and resolving the package straight
+ * to ../src, so edits to SDK source reload the app live with no rebuild step.
  */
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, '..');
@@ -15,15 +14,24 @@ const config = getDefaultConfig(projectRoot);
 
 config.watchFolders = [workspaceRoot];
 
+// Example's node_modules first, repo root's second (for the SDK's own deps).
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
-// Prefer the package's `source` export (src/index.ts) over built output.
-config.resolver.unstable_conditionNames = ['source', 'react-native', 'require', 'import'];
-
-// One copy of react/react-native/styled-components: always the example's.
-config.resolver.disableHierarchicalLookup = true;
+// Resolve ONLY react-native-support to its TypeScript source. Everything else
+// resolves normally — a global 'source' condition would drag every package
+// (expo included) to unbuilt source.
+const SDK = 'react-native-support';
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (moduleName === SDK) {
+    return { type: 'sourceFile', filePath: path.join(workspaceRoot, 'src', 'index.ts') };
+  }
+  if (moduleName === `${SDK}/headless`) {
+    return { type: 'sourceFile', filePath: path.join(workspaceRoot, 'src', 'headless.ts') };
+  }
+  return context.resolveRequest(context, moduleName, platform);
+};
 
 module.exports = config;
