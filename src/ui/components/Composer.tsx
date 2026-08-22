@@ -62,7 +62,7 @@ export function Composer({
 const Row = styled.View`
   flex-direction: row;
   align-items: flex-end;
-  padding: ${t((th) => th.spacing.sm)}px;
+  padding: ${t((th) => th.spacing.sm)}px ${t((th) => th.spacing.md)}px;
   gap: ${t((th) => th.spacing.sm)}px;
   border-top-width: ${t((th) => th.borders.hairline)}px;
   border-top-color: ${t((th) => th.colors.border)};
@@ -74,7 +74,7 @@ const Input = styled.TextInput.attrs(({ theme }) => ({
 }))`
   flex: 1;
   border-radius: ${t((th) => th.radius.input)}px;
-  padding: ${t((th) => th.spacing.sm)}px ${t((th) => th.spacing.md)}px;
+  padding: ${t((th) => th.spacing.sm)}px ${t((th) => th.spacing.lg)}px;
   font-size: ${t((th) => th.typography.body.fontSize)}px;
   max-height: ${t((th) => th.sizes.composerMaxHeight)}px;
   background-color: ${t((th) => th.colors.inputBackground)};

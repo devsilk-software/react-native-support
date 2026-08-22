@@ -35,7 +35,7 @@ export const BubbleRow = styled.View<{ $variant: BubbleVariant }>`
   flex-direction: row;
   justify-content: ${rowJustify};
   padding-horizontal: ${t((th) => th.spacing.md)}px;
-  margin-vertical: ${t((th) => th.spacing.xxs)}px;
+  margin-vertical: ${t((th) => th.spacing.xs)}px;
 `;
 
 export const Bubble = styled.View<{ $variant: BubbleVariant; $status?: Message['status'] }>`

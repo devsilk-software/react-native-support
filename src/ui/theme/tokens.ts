@@ -136,12 +136,14 @@ export const defaultTheme: SupportTheme = {
     onAssistantBubble: '#16181D',
     inputBackground: '#F1F2F4',
     inputText: '#16181D',
-    placeholder: '#8A919C',
+    // 4.5:1+ on background/surface/input — WCAG AA for normal text.
+    placeholder: '#57626F',
     border: '#E3E5E8',
     errorBackground: '#FDECEC',
     onErrorBackground: '#B3261E',
     headerText: '#16181D',
-    muted: '#8A919C',
+    // 4.5:1+ on background/surface/input — WCAG AA for normal text.
+    muted: '#57626F',
     shadow: '#000000',
   },
   radius: {
@@ -188,7 +190,7 @@ export const defaultTheme: SupportTheme = {
   insets: {
     sheetTopMin: 14,
     sheetTopAndroidFallback: 24,
-    sheetBottomMin: 8,
+    sheetBottomMin: 16,
     sheetBottomFallbackIOS: 24,
     fabBottomOffset: 24,
     fabBottomFallbackIOS: 40,

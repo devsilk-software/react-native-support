@@ -62,7 +62,7 @@ export function TypingIndicator() {
 const Row = styled.View`
   flex-direction: row;
   padding-horizontal: ${t((th) => th.spacing.md)}px;
-  margin-vertical: ${t((th) => th.spacing.xxs)}px;
+  margin-vertical: ${t((th) => th.spacing.xs)}px;
 `;
 
 const Bubble = styled.View`
