@@ -22,7 +22,9 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 export interface SendMessageInput {
   conversationId: string | null;
   content: string;
-  /** Generated once per user message; reused verbatim on retry (§6 idempotency). */
+  /** Stable install id — identifies the end user when a conversation is created. */
+  installId: string;
+  /** Generated once per user message; reused verbatim on retry (idempotency). */
   idempotencyKey?: string;
 }
 
@@ -49,7 +51,7 @@ export class SupportClient {
     const conversationId = input.conversationId ?? 'new';
     return this.post<SendMessageResult>(
       `/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
-      { content: input.content },
+      { content: input.content, installId: input.installId },
       {
         'Idempotency-Key': input.idempotencyKey ?? generateId('idem_'),
         Authorization: `Bearer ${this.config.apiKey}`,

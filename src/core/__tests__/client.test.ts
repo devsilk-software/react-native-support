@@ -47,7 +47,7 @@ describe('SupportClient', () => {
         message: { id: 'm1', role: 'assistant', content: 'hi', createdAt: 'now' },
       }),
     );
-    await client.sendMessage({ conversationId: null, content: 'hello' });
+    await client.sendMessage({ conversationId: null, content: 'hello', installId: 'inst_test12345' });
     const [url, init] = mockFetch.mock.calls[0] as [string, RequestInit];
     expect(url).toBe('https://api.example.com/api/v1/conversations/new/messages');
     const headers = init.headers as Record<string, string>;
@@ -61,8 +61,8 @@ describe('SupportClient', () => {
         message: { id: 'm1', role: 'assistant', content: 'hi', createdAt: 'now' },
       }),
     );
-    await client.sendMessage({ conversationId: 'c1', content: 'x', idempotencyKey: 'idem_fixed' });
-    await client.sendMessage({ conversationId: 'c1', content: 'x', idempotencyKey: 'idem_fixed' });
+    await client.sendMessage({ conversationId: 'c1', content: 'x', installId: 'inst_test12345', idempotencyKey: 'idem_fixed' });
+    await client.sendMessage({ conversationId: 'c1', content: 'x', installId: 'inst_test12345', idempotencyKey: 'idem_fixed' });
     const keys = mockFetch.mock.calls.map(
       (c) => (c[1] as RequestInit).headers as Record<string, string>,
     );

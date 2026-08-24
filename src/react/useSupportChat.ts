@@ -26,7 +26,7 @@ interface PendingSend {
 }
 
 export function useSupportChat(): SupportChat {
-  const { client } = useSupport();
+  const { client, installId } = useSupport();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -53,6 +53,7 @@ export function useSupportChat(): SupportChat {
         const result = await client.sendMessage({
           conversationId: conversationIdRef.current,
           content: pending.content,
+          installId,
           idempotencyKey: pending.idempotencyKey,
         });
         conversationIdRef.current = result.conversationId;
@@ -75,7 +76,7 @@ export function useSupportChat(): SupportChat {
         setIsSending(false);
       }
     },
-    [client],
+    [client, installId],
   );
 
   const send = useCallback(
