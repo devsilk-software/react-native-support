@@ -1,5 +1,6 @@
 import { SupportApiError, SupportNetworkError } from './errors';
 import { generateId } from './ids';
+import { postSse, sseAvailable } from './sse';
 import type {
   ApiErrorBody,
   BootstrapRequest,
@@ -12,9 +13,9 @@ import type {
  * HTTP client for the platform wire protocol.
  *
  * Pure TypeScript on global fetch — no React, no React Native imports, so it
- * runs under Node for tests and is reusable for future non-RN SDKs.
- * Streaming (SSE over XHR) comes later; the message endpoint is designed
- * for it, so turning it on is additive.
+ * runs under Node for tests and is reusable for future non-RN SDKs. Streaming
+ * uses SSE over XHR (see sse.ts) and degrades to the blocking request where
+ * XHR is unavailable.
  */
 
 const DEFAULT_TIMEOUT_MS = 30_000;
@@ -57,6 +58,49 @@ export class SupportClient {
         Authorization: `Bearer ${this.config.apiKey}`,
       },
     );
+  }
+
+  /**
+   * Streaming send: onDelta fires per text fragment as the assistant writes,
+   * and the resolved result is identical to sendMessage. Falls back to the
+   * blocking request (one onDelta with the full text) where XHR streaming is
+   * unavailable, e.g. under Node.
+   */
+  async sendMessageStream(
+    input: SendMessageInput & { onDelta: (text: string) => void },
+  ): Promise<SendMessageResult> {
+    if (!sseAvailable()) {
+      const result = await this.sendMessage(input);
+      input.onDelta(result.message.content);
+      return result;
+    }
+
+    const conversationId = input.conversationId ?? 'new';
+    let done: SendMessageResult | null = null;
+    let streamError: string | null = null;
+    await postSse({
+      url: `${this.config.apiUrl}/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
+      body: { content: input.content, installId: input.installId },
+      headers: {
+        'Idempotency-Key': input.idempotencyKey ?? generateId('idem_'),
+        Authorization: `Bearer ${this.config.apiKey}`,
+      },
+      onEvent: (event) => {
+        if (event.type === 'delta' && typeof event.text === 'string') {
+          input.onDelta(event.text);
+        } else if (event.type === 'done') {
+          done = {
+            conversationId: event.conversationId as string,
+            message: event.message as Message,
+          };
+        } else if (event.type === 'error') {
+          streamError = typeof event.message === 'string' ? event.message : 'Stream failed';
+        }
+      },
+    });
+    if (streamError) throw new SupportApiError(502, 'stream_error', streamError);
+    if (!done) throw new SupportNetworkError('Connection closed before the answer finished');
+    return done;
   }
 
   async listMessages(conversationId: string): Promise<{ messages: Message[] }> {

@@ -69,7 +69,7 @@ function SheetBody({
         </CloseButton>
       </Header>
 
-      <MessageList messages={chat.messages} isTyping={chat.isSending} strings={strings} />
+      <MessageList messages={chat.messages} isTyping={chat.isThinking} strings={strings} />
 
       {chat.error ? (
         <ErrorBanner

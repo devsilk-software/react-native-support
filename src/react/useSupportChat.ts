@@ -4,14 +4,16 @@ import type { Message } from '../core/types';
 import { useSupport } from './SupportContext';
 
 /**
- * Conversation state machine: optimistic user message, pending
- * assistant turn, typed failure with retry. Non-streaming for now — the
- * SSE upgrade changes this hook's internals, not its surface.
+ * Conversation state machine: optimistic user message, streamed assistant
+ * reply growing in place, typed failure with retry.
  */
 
 export interface SupportChat {
   messages: Message[];
+  /** True from send until the reply is complete — gates the composer. */
   isSending: boolean;
+  /** True only while waiting for the first token — gates the typing dots. */
+  isThinking: boolean;
   error: Error | null;
   send: (content: string) => Promise<void>;
   /** Re-sends the last failed user message with its original idempotency key. */
@@ -29,6 +31,7 @@ export function useSupportChat(): SupportChat {
   const { client, installId } = useSupport();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const conversationIdRef = useRef<string | null>(null);
   const lastFailedRef = useRef<PendingSend | null>(null);
@@ -36,6 +39,7 @@ export function useSupportChat(): SupportChat {
   const perform = useCallback(
     async (pending: PendingSend) => {
       setIsSending(true);
+      setIsThinking(true);
       setError(null);
       setMessages((prev) => {
         const optimistic: Message = {
@@ -49,31 +53,58 @@ export function useSupportChat(): SupportChat {
         return [...withoutRetry, optimistic];
       });
 
+      // The reply grows in a placeholder bubble; `done` swaps in the server
+      // message (real id, citations) without a visual jump.
+      const replyId = generateId('local_reply_');
+      let replyStarted = false;
+      const onDelta = (text: string) => {
+        setIsThinking(false);
+        setMessages((prev) => {
+          if (!replyStarted) {
+            replyStarted = true;
+            return [
+              ...prev.map((m) =>
+                m.id === pending.localId ? { ...m, status: 'sent' as const } : m,
+              ),
+              {
+                id: replyId,
+                role: 'assistant' as const,
+                content: text,
+                createdAt: new Date().toISOString(),
+              },
+            ];
+          }
+          return prev.map((m) => (m.id === replyId ? { ...m, content: m.content + text } : m));
+        });
+      };
+
       try {
-        const result = await client.sendMessage({
+        const result = await client.sendMessageStream({
           conversationId: conversationIdRef.current,
           content: pending.content,
           installId,
           idempotencyKey: pending.idempotencyKey,
+          onDelta,
         });
         conversationIdRef.current = result.conversationId;
         lastFailedRef.current = null;
-        setMessages((prev) => [
-          ...prev.map((m) =>
-            m.id === pending.localId ? { ...m, status: 'sent' as const } : m,
-          ),
-          result.message,
-        ]);
+        setMessages((prev) => {
+          const settled = prev
+            .filter((m) => m.id !== replyId)
+            .map((m) => (m.id === pending.localId ? { ...m, status: 'sent' as const } : m));
+          return [...settled, result.message];
+        });
       } catch (cause) {
         lastFailedRef.current = pending;
         setError(cause instanceof Error ? cause : new Error(String(cause)));
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === pending.localId ? { ...m, status: 'failed' as const } : m,
-          ),
+          prev
+            .filter((m) => m.id !== replyId)
+            .map((m) => (m.id === pending.localId ? { ...m, status: 'failed' as const } : m)),
         );
       } finally {
         setIsSending(false);
+        setIsThinking(false);
       }
     },
     [client, installId],
@@ -100,5 +131,5 @@ export function useSupportChat(): SupportChat {
 
   const clearError = useCallback(() => setError(null), []);
 
-  return { messages, isSending, error, send, retry, clearError };
+  return { messages, isSending, isThinking, error, send, retry, clearError };
 }
