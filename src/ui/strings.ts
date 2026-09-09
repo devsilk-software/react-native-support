@@ -14,7 +14,7 @@ export const defaultStrings: SupportStrings = {
   headerTitle: 'Support',
   inputPlaceholder: 'Type your question…',
   send: 'Send',
-  emptyState: 'Ask us anything — we usually reply in seconds.',
+  emptyState: 'Ask us anything. We usually reply in seconds.',
   errorGeneric: 'Something went wrong sending your message.',
   retry: 'Retry',
   close: 'Close',
