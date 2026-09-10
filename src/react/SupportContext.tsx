@@ -25,6 +25,30 @@ export interface SupportContextValue {
 
 const SupportContext = createContext<SupportContextValue | null>(null);
 
+/**
+ * The app's bundle id / package name, when an optional provider is installed.
+ * The platform uses it for the per-project allowlist; absent is fine. The
+ * requires stay literal inside try/catch — Metro's rule for optional deps.
+ */
+function detectBundleId(): string | undefined {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const app = require('expo-application') as { applicationId?: string | null };
+    if (app.applicationId) return app.applicationId;
+  } catch {
+    // not an Expo app, or expo-application not installed
+  }
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const info = require('react-native-device-info') as { getBundleId?: () => string };
+    const bundleId = info.getBundleId?.();
+    if (bundleId) return bundleId;
+  } catch {
+    // react-native-device-info not installed
+  }
+  return undefined;
+}
+
 export interface SupportProviderProps extends SupportConfig {
   children: ReactNode;
 }
@@ -49,7 +73,7 @@ export function SupportProvider({ apiKey, apiUrl, children }: SupportProviderPro
     setBootstrap(null);
     setBootstrapError(null);
     client
-      .bootstrap({ installId })
+      .bootstrap({ installId, bundleId: detectBundleId() })
       .then((result) => {
         if (!cancelled) setBootstrap(result);
       })

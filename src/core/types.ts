@@ -31,6 +31,11 @@ export interface BootstrapResponse {
     used: number;
     limit: number;
   };
+  /** Short-lived credential the client uses for every call after bootstrap. */
+  session: {
+    token: string;
+    expiresAt: string;
+  };
   serverTime: string;
 }
 

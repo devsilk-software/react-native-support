@@ -36,27 +36,56 @@ export interface SendMessageResult {
 
 export class SupportClient {
   private readonly config: SupportConfig;
+  /** Short-lived credential from bootstrap; preferred over the raw key. */
+  private sessionToken: string | null = null;
+  private lastBootstrapInput: Omit<BootstrapRequest, 'apiKey'> | null = null;
 
   constructor(config: SupportConfig) {
     this.config = { ...config, apiUrl: config.apiUrl.replace(/\/+$/, '') };
   }
 
   async bootstrap(input: Omit<BootstrapRequest, 'apiKey'>): Promise<BootstrapResponse> {
-    return this.post<BootstrapResponse>('/api/v1/bootstrap', {
+    const response = await this.post<BootstrapResponse>('/api/v1/bootstrap', {
       ...input,
       apiKey: this.config.apiKey,
     });
+    this.lastBootstrapInput = input;
+    this.sessionToken = response.session?.token ?? null;
+    return response;
+  }
+
+  private authHeader(): Record<string, string> {
+    return { Authorization: `Bearer ${this.sessionToken ?? this.config.apiKey}` };
+  }
+
+  /**
+   * Session tokens expire; a 401 that names the session is healed with one
+   * silent re-bootstrap and a retry. Any other failure passes through.
+   */
+  private async withSessionRetry<T>(run: () => Promise<T>): Promise<T> {
+    try {
+      return await run();
+    } catch (cause) {
+      const sessionDied =
+        cause instanceof SupportApiError &&
+        cause.status === 401 &&
+        (cause.code === 'session_expired' || cause.code === 'invalid_token');
+      if (!sessionDied || !this.lastBootstrapInput) throw cause;
+      this.sessionToken = null;
+      await this.bootstrap(this.lastBootstrapInput);
+      return run();
+    }
   }
 
   async sendMessage(input: SendMessageInput): Promise<SendMessageResult> {
     const conversationId = input.conversationId ?? 'new';
-    return this.post<SendMessageResult>(
-      `/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
-      { content: input.content, installId: input.installId },
-      {
-        'Idempotency-Key': input.idempotencyKey ?? generateId('idem_'),
-        Authorization: `Bearer ${this.config.apiKey}`,
-      },
+    const idempotencyKey = input.idempotencyKey ?? generateId('idem_');
+    return this.withSessionRetry(() =>
+      this.post<SendMessageResult>(
+        `/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
+        { content: input.content, installId: input.installId },
+        { 'Idempotency-Key': idempotencyKey, ...this.authHeader() },
+      ),
     );
   }
 
@@ -76,27 +105,32 @@ export class SupportClient {
     }
 
     const conversationId = input.conversationId ?? 'new';
+    const idempotencyKey = input.idempotencyKey ?? generateId('idem_');
     let done: SendMessageResult | null = null;
     let streamError: string | null = null;
-    await postSse({
-      url: `${this.config.apiUrl}/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
-      body: { content: input.content, installId: input.installId },
-      headers: {
-        'Idempotency-Key': input.idempotencyKey ?? generateId('idem_'),
-        Authorization: `Bearer ${this.config.apiKey}`,
-      },
-      onEvent: (event) => {
-        if (event.type === 'delta' && typeof event.text === 'string') {
-          input.onDelta(event.text);
-        } else if (event.type === 'done') {
-          done = {
-            conversationId: event.conversationId as string,
-            message: event.message as Message,
-          };
-        } else if (event.type === 'error') {
-          streamError = typeof event.message === 'string' ? event.message : 'Stream failed';
-        }
-      },
+    await this.withSessionRetry(() => {
+      done = null;
+      streamError = null;
+      return postSse({
+        url: `${this.config.apiUrl}/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
+        body: { content: input.content, installId: input.installId },
+        headers: {
+          'Idempotency-Key': idempotencyKey,
+          ...this.authHeader(),
+        },
+        onEvent: (event) => {
+          if (event.type === 'delta' && typeof event.text === 'string') {
+            input.onDelta(event.text);
+          } else if (event.type === 'done') {
+            done = {
+              conversationId: event.conversationId as string,
+              message: event.message as Message,
+            };
+          } else if (event.type === 'error') {
+            streamError = typeof event.message === 'string' ? event.message : 'Stream failed';
+          }
+        },
+      });
     });
     if (streamError) throw new SupportApiError(502, 'stream_error', streamError);
     if (!done) throw new SupportNetworkError('Connection closed before the answer finished');
@@ -104,11 +138,13 @@ export class SupportClient {
   }
 
   async listMessages(conversationId: string): Promise<{ messages: Message[] }> {
-    return this.request<{ messages: Message[] }>(
-      'GET',
-      `/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
-      undefined,
-      { Authorization: `Bearer ${this.config.apiKey}` },
+    return this.withSessionRetry(() =>
+      this.request<{ messages: Message[] }>(
+        'GET',
+        `/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
+        undefined,
+        this.authHeader(),
+      ),
     );
   }
 
