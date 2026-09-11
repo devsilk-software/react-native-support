@@ -5,6 +5,8 @@ export interface SupportStrings {
   send: string;
   emptyState: string;
   errorGeneric: string;
+  /** Shown when the app's support plan is out of conversations for the month. */
+  errorUnavailable: string;
   retry: string;
   close: string;
   openSupport: string;
@@ -16,6 +18,7 @@ export const defaultStrings: SupportStrings = {
   send: 'Send',
   emptyState: 'Ask us anything. We usually reply in seconds.',
   errorGeneric: 'Something went wrong sending your message.',
+  errorUnavailable: 'Support is unavailable right now. Please try again later.',
   retry: 'Retry',
   close: 'Close',
   openSupport: 'Open support chat',

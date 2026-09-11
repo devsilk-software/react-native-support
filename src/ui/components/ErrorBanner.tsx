@@ -3,14 +3,18 @@ import { Typography } from './Typography';
 import { t } from '../theme';
 import type { SupportStrings } from '../strings';
 
-/** Inline error with retry — errors explain and offer a way forward. */
+/**
+ * Inline error. Retry is offered only when retrying could actually work —
+ * a banner inviting someone to retry a request that will fail identically is
+ * worse than no banner.
+ */
 export function ErrorBanner({
   message,
   onRetry,
   strings,
 }: {
   message: string;
-  onRetry: () => void;
+  onRetry?: (() => void) | undefined;
   strings: SupportStrings;
 }) {
   return (
@@ -20,11 +24,17 @@ export function ErrorBanner({
           {message || strings.errorGeneric}
         </Typography>
       </Grow>
-      <RetryButton onPress={onRetry} accessibilityRole="button" accessibilityLabel={strings.retry}>
-        <Typography variant="label" color="onErrorBackground" weight="700">
-          {strings.retry}
-        </Typography>
-      </RetryButton>
+      {onRetry ? (
+        <RetryButton
+          onPress={onRetry}
+          accessibilityRole="button"
+          accessibilityLabel={strings.retry}
+        >
+          <Typography variant="label" color="onErrorBackground" weight="700">
+            {strings.retry}
+          </Typography>
+        </RetryButton>
+      ) : null}
     </Banner>
   );
 }

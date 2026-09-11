@@ -9,7 +9,7 @@ import { SupportAI } from 'react-native-support';
  * or your deployment) and paste a key from `pnpm db:seed`. Use the *test* key:
  * it never counts toward quota.
  */
-const API_KEY = 'rns_pk_test_PASTE_FROM_SEED';
+const API_KEY = 'rns_pk_test_REDACTED';
 // The Android emulator's "localhost" is the emulator itself; the host machine
 // is reachable at 10.0.2.2. iOS simulators share the host's loopback.
 const API_URL = Platform.select({

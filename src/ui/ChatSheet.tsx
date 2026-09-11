@@ -2,6 +2,7 @@ import { Modal } from 'react-native';
 import styled from 'styled-components/native';
 import type { SupportChat } from '../react/useSupportChat';
 import { Composer, ErrorBanner, MessageList, Typography } from './components';
+import { describeFailure } from './describeFailure';
 import { KeyboardAvoider } from './useKeyboard';
 import { MaybeSafeAreaProvider, useChatInsets } from './useSafeArea';
 import { t, useSupportTheme } from './theme';
@@ -73,8 +74,12 @@ function SheetBody({
 
       {chat.error ? (
         <ErrorBanner
-          message={chat.error.message}
-          onRetry={() => void chat.retry()}
+          message={describeFailure(chat.error, strings).text}
+          onRetry={
+            describeFailure(chat.error, strings).canRetry
+              ? () => void chat.retry()
+              : undefined
+          }
           strings={strings}
         />
       ) : null}
