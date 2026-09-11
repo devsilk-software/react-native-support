@@ -7,3 +7,6 @@ coverage/
 
 # expo local state
 .expo/
+
+# local device bug reports, never part of the package
+bugreport-*.zip
