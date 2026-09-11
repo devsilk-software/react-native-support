@@ -10,9 +10,9 @@ import { mergeStrings, type SupportStrings } from './strings';
 import { mergeTheme, type SupportThemeOverride } from './theme';
 
 /**
- * The single public component — one prop required beyond the endpoint:
+ * The single public component. One required prop:
  *
- *   <SupportAI apiKey="rns_pk_…" apiUrl="https://…" />
+ *   <SupportAI apiKey="rns_pk_…" />
  *
  * Mounts its own provider, theme, floating button, and chat sheet. Anyone who
  * wants a different interface uses 'react-native-support/headless' instead.
@@ -22,7 +22,8 @@ import { mergeTheme, type SupportThemeOverride } from './theme';
  */
 export interface SupportAIProps {
   apiKey: string;
-  apiUrl: string;
+  /** Override the platform base URL. Defaults to the hosted service. */
+  apiUrl?: string;
   theme?: SupportThemeOverride;
   strings?: Partial<SupportStrings>;
   /** Open the chat sheet on mount — e.g. when deep-linking straight into support. */

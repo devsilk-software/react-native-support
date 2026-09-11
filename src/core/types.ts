@@ -6,8 +6,8 @@
 export interface SupportConfig {
   /** Publishable key: rns_pk_test_… or rns_pk_live_… */
   apiKey: string;
-  /** Platform base URL, e.g. https://api.example.com — no trailing slash. */
-  apiUrl: string;
+  /** Override the platform base URL. Defaults to the hosted service. */
+  apiUrl?: string;
 }
 
 export interface BootstrapRequest {

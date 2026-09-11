@@ -1,3 +1,4 @@
+import { DEFAULT_API_URL } from './config';
 import { SupportApiError, SupportNetworkError } from './errors';
 import { generateId } from './ids';
 import { postSse, sseAvailable } from './sse';
@@ -35,13 +36,16 @@ export interface SendMessageResult {
 }
 
 export class SupportClient {
-  private readonly config: SupportConfig;
+  private readonly config: SupportConfig & { apiUrl: string };
   /** Short-lived credential from bootstrap; preferred over the raw key. */
   private sessionToken: string | null = null;
   private lastBootstrapInput: Omit<BootstrapRequest, 'apiKey'> | null = null;
 
   constructor(config: SupportConfig) {
-    this.config = { ...config, apiUrl: config.apiUrl.replace(/\/+$/, '') };
+    this.config = {
+      ...config,
+      apiUrl: (config.apiUrl ?? DEFAULT_API_URL).replace(/\/+$/, ''),
+    };
   }
 
   async bootstrap(input: Omit<BootstrapRequest, 'apiKey'>): Promise<BootstrapResponse> {

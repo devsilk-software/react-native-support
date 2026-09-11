@@ -31,7 +31,12 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["src", "lib", "!**/__tests__", "!**/*.tsbuildinfo"],
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/*.tsbuildinfo"
+  ],
   "scripts": {
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
@@ -40,7 +45,15 @@
     "clean": "rm -rf lib",
     "prepare": "bob build"
   },
-  "keywords": ["react-native", "support", "chat", "ai", "customer-support", "chatbot", "expo"],
+  "keywords": [
+    "react-native",
+    "support",
+    "chat",
+    "ai",
+    "customer-support",
+    "chatbot",
+    "expo"
+  ],
   "repository": "github:devsilk-software/react-native-support",
   "license": "MIT",
   "dependencies": {
@@ -53,8 +66,12 @@
     "react-native-safe-area-context": ">=4.0.0"
   },
   "peerDependenciesMeta": {
-    "react-native-keyboard-controller": { "optional": true },
-    "react-native-safe-area-context": { "optional": true }
+    "react-native-keyboard-controller": {
+      "optional": true
+    },
+    "react-native-safe-area-context": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
@@ -72,10 +89,36 @@
     "source": "src",
     "output": "lib",
     "targets": [
-      ["commonjs", { "esm": true }],
-      ["module", { "esm": true }],
-      ["typescript", { "project": "tsconfig.build.json" }]
+      [
+        "commonjs",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
     ]
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  },
+  "author": "devsilk",
+  "homepage": "https://github.com/devsilk-software/react-native-support#readme",
+  "bugs": {
+    "url": "https://github.com/devsilk-software/react-native-support/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false
 }
