@@ -14,6 +14,11 @@ export interface SupportChat {
   isSending: boolean;
   /** True only while waiting for the first token — gates the typing dots. */
   isThinking: boolean;
+  /**
+   * The last question was kept for the app's team rather than answered,
+   * because the app's support plan is out of conversations this month.
+   */
+  captured: boolean;
   error: Error | null;
   send: (content: string) => Promise<void>;
   /** Re-sends the last failed user message with its original idempotency key. */
@@ -32,6 +37,7 @@ export function useSupportChat(): SupportChat {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
+  const [captured, setCaptured] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const conversationIdRef = useRef<string | null>(null);
   const lastFailedRef = useRef<PendingSend | null>(null);
@@ -41,6 +47,7 @@ export function useSupportChat(): SupportChat {
       setIsSending(true);
       setIsThinking(true);
       setError(null);
+      setCaptured(false);
       setMessages((prev) => {
         const optimistic: Message = {
           id: pending.localId,
@@ -88,11 +95,13 @@ export function useSupportChat(): SupportChat {
         });
         conversationIdRef.current = result.conversationId;
         lastFailedRef.current = null;
+        setCaptured(result.captured);
         setMessages((prev) => {
           const settled = prev
             .filter((m) => m.id !== replyId)
             .map((m) => (m.id === pending.localId ? { ...m, status: 'sent' as const } : m));
-          return [...settled, result.message];
+          // A captured question has no reply to append.
+          return result.message ? [...settled, result.message] : settled;
         });
       } catch (cause) {
         lastFailedRef.current = pending;
@@ -131,5 +140,5 @@ export function useSupportChat(): SupportChat {
 
   const clearError = useCallback(() => setError(null), []);
 
-  return { messages, isSending, isThinking, error, send, retry, clearError };
+  return { messages, isSending, isThinking, captured, error, send, retry, clearError };
 }

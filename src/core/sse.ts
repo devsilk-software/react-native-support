@@ -13,7 +13,7 @@ import type { ApiErrorBody } from './types';
 const STREAM_TIMEOUT_MS = 60_000;
 
 export interface SseEvent {
-  type: 'delta' | 'done' | 'error';
+  type: 'delta' | 'done' | 'captured' | 'error';
   text?: string;
   message?: unknown;
   conversationId?: string;

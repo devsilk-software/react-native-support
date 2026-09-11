@@ -1,7 +1,7 @@
 import { Modal } from 'react-native';
 import styled from 'styled-components/native';
 import type { SupportChat } from '../react/useSupportChat';
-import { Composer, ErrorBanner, MessageList, Typography } from './components';
+import { Composer, ErrorBanner, MessageList, NoticeBanner, Typography } from './components';
 import { describeFailure } from './describeFailure';
 import { KeyboardAvoider } from './useKeyboard';
 import { MaybeSafeAreaProvider, useChatInsets } from './useSafeArea';
@@ -83,6 +83,8 @@ function SheetBody({
           strings={strings}
         />
       ) : null}
+
+      {chat.captured ? <NoticeBanner message={strings.messageCaptured} /> : null}
 
       <ComposerWrap $bottom={composerBottom}>
         <Composer

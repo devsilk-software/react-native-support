@@ -7,4 +7,5 @@ export { MessageBubble } from './MessageBubble';
 export { MessageList } from './MessageList';
 export { Typography } from './Typography';
 export type { TypographyProps } from './Typography';
+export { NoticeBanner } from './NoticeBanner';
 export { TypingIndicator } from './TypingIndicator';

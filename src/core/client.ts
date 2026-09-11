@@ -32,7 +32,14 @@ export interface SendMessageInput {
 
 export interface SendMessageResult {
   conversationId: string;
-  message: Message;
+  /** Absent when the question was captured rather than answered. */
+  message: Message | null;
+  /**
+   * The app's support plan is out of conversations this month, so the
+   * question was kept for the developer instead of being answered. The user
+   * is told it reached the team; nothing about plans or billing.
+   */
+  captured: boolean;
 }
 
 export class SupportClient {
@@ -84,13 +91,18 @@ export class SupportClient {
   async sendMessage(input: SendMessageInput): Promise<SendMessageResult> {
     const conversationId = input.conversationId ?? 'new';
     const idempotencyKey = input.idempotencyKey ?? generateId('idem_');
-    return this.withSessionRetry(() =>
-      this.post<SendMessageResult>(
+    const body = await this.withSessionRetry(() =>
+      this.post<{ conversationId: string; message?: Message; captured?: boolean }>(
         `/api/v1/conversations/${encodeURIComponent(conversationId)}/messages`,
         { content: input.content, installId: input.installId },
         { 'Idempotency-Key': idempotencyKey, ...this.authHeader() },
       ),
     );
+    return {
+      conversationId: body.conversationId,
+      message: body.message ?? null,
+      captured: body.captured === true,
+    };
   }
 
   /**
@@ -104,7 +116,7 @@ export class SupportClient {
   ): Promise<SendMessageResult> {
     if (!sseAvailable()) {
       const result = await this.sendMessage(input);
-      input.onDelta(result.message.content);
+      if (result.message) input.onDelta(result.message.content);
       return result;
     }
 
@@ -129,6 +141,13 @@ export class SupportClient {
             done = {
               conversationId: event.conversationId as string,
               message: event.message as Message,
+              captured: false,
+            };
+          } else if (event.type === 'captured') {
+            done = {
+              conversationId: event.conversationId as string,
+              message: null,
+              captured: true,
             };
           } else if (event.type === 'error') {
             streamError = typeof event.message === 'string' ? event.message : 'Stream failed';
