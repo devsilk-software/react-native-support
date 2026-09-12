@@ -1,6 +1,6 @@
 {
   "name": "react-native-support",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "AI customer support SDK for React Native. Add a 24/7 AI support agent to your app in minutes.",
   "source": "./src/index.ts",
   "main": "./lib/commonjs/index.js",
@@ -35,7 +35,8 @@
     "src",
     "lib",
     "!**/__tests__",
-    "!**/*.tsbuildinfo"
+    "!**/*.tsbuildinfo",
+    "LICENSE"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",

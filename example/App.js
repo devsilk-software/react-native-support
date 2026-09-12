@@ -5,11 +5,11 @@ import { SupportAI } from 'react-native-support';
 /**
  * Minimal host app: some content, plus <SupportAI />
  *
- * Point apiUrl at your running support-platform (next dev → http://localhost:3000,
- * or your deployment) and paste a key from `pnpm db:seed`. Use the *test* key:
- * it never counts toward quota.
+ * Paste a *test* key from the dashboard (app.react-native-support.com → API
+ * keys): test keys never count toward quota. Leave API_URL alone to use the
+ * hosted service, or point it at a locally running platform as below.
  */
-const API_KEY = 'rns_pk_test_REDACTED';
+const API_KEY = 'rns_pk_test_replace_me';
 // The Android emulator's "localhost" is the emulator itself; the host machine
 // is reachable at 10.0.2.2. iOS simulators share the host's loopback.
 const API_URL = Platform.select({
