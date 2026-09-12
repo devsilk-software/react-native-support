@@ -10,3 +10,6 @@ coverage/
 
 # local device bug reports, never part of the package
 bugreport-*.zip
+
+# local env (Expo reads .env.local; keys must never be committed)
+.env*.local
