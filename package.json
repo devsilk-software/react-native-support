@@ -36,7 +36,8 @@
     "lib",
     "!**/__tests__",
     "!**/*.tsbuildinfo",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -56,7 +57,7 @@
     "expo"
   ],
   "repository": "github:devsilk-software/react-native-support",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
     "styled-components": "^6.5.3"
   },

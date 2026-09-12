@@ -204,4 +204,4 @@ React 18+, React Native 0.72+ (New Architecture supported), iOS 15+, Android 7+.
 
 ## License
 
-MIT © devsilk
+Apache-2.0 © devsilk
