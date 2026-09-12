@@ -39,8 +39,9 @@ npm install react-native-support
 
 ## Quickstart
 
-1. Create an account and an app in the dashboard, then copy the **test key**
-   (`rns_pk_test_…`) from the API keys screen.
+1. Sign in at [app.react-native-support.com](https://app.react-native-support.com) — that
+   creates your account and first app — then copy the **test key** (`rns_pk_test_…`) from
+   the API keys screen.
 2. Add some knowledge: paste your FAQ or point the crawler at your docs site.
    The assistant answers only from this, so it is worth ten minutes.
 3. Render `<SupportAI apiKey="rns_pk_test_…" />` anywhere in your tree, usually
@@ -134,6 +135,11 @@ users are anonymous install ids.
 ## Requirements
 
 React 18+, React Native 0.72+ (New Architecture supported), iOS 15+, Android 7+.
+
+## Links
+
+- [Dashboard](https://app.react-native-support.com) — apps, knowledge, API keys, conversations
+- [Issues](https://github.com/devsilk-software/react-native-support/issues) — bugs and questions
 
 ## License
 
