@@ -38,9 +38,9 @@ grounded assistant behind it.
   ▶ Refunds are handled by Apple and Google, not by us.
     On iOS, request one from Apple's Report a Problem page.
 
-                                Czy mogę eksportować notatki?  ◀ user
-  ▶ Tak. Otwórz notatnik, dotknij ikony udostępniania
-    i wybierz Eksportuj jako PDF.
+                                  ¿Puedo exportar mis notas?  ◀ user
+  ▶ Sí. Abre un cuaderno, toca el icono de compartir
+    y elige Exportar como PDF.
 ```
 
 Replies stream in word by word, in whatever language the question was asked.
@@ -111,9 +111,9 @@ Override any of `colors`, `radius`, `spacing`, `typography`, `sizes`, `opacity`,
 <SupportAI
   apiKey="rns_pk_live_…"
   strings={{
-    headerTitle: 'Pomoc',
-    inputPlaceholder: 'Zadaj pytanie…',
-    emptyState: 'Zapytaj o cokolwiek. Zwykle odpowiadamy w kilka sekund.',
+    headerTitle: 'Ayuda',
+    inputPlaceholder: 'Escribe tu pregunta…',
+    emptyState: 'Pregúntanos lo que quieras. Solemos responder en segundos.',
   }}
 />
 ```
