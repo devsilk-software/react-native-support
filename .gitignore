@@ -13,3 +13,6 @@ bugreport-*.zip
 
 # local env (Expo reads .env.local; keys must never be committed)
 .env*.local
+
+# npm auth belongs in ~/.npmrc, never in the repo
+.npmrc
